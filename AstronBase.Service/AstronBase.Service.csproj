@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\AstronBase.DAL\AstronBase.DAL.csproj" />
+    <ProjectReference Include="..\AstronBase.Domain\AstronBase.Domain.csproj" />
+  </ItemGroup>
+
+</Project>
