@@ -1,4 +1,4 @@
-﻿using AstronBase.ViewModels;
+﻿using AstronBase.Domain.ViewModels.Pagination;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.Routing;

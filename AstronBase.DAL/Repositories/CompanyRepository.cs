@@ -54,5 +54,17 @@ namespace AstronBase.DAL.Repositories
         {
             return await _db.Company.FirstOrDefaultAsync(x => x.Name == name);
         }
+
+        public    Task<List<Company>> GetBySearch(string search)
+        {
+            var companies = from c in  _db.Company select c;
+
+           
+               // return companies.Where(s =>
+                   // s.Name.Contains(search) || s.DirectorName.Contains(search));
+
+                   return  _db.Company.Where(c => c.Name.Contains(search)).ToListAsync();
+
+        }
     }
 }

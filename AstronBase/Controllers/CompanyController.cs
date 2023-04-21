@@ -1,199 +1,156 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
+using AstronBase.Domain.ViewModels.Company;
+using AstronBase.Domain.ViewModels.Pagination;
+using AstronBase.Service.Interfaces;
 
-using AstronBase.Models;
-using PagedList;
-using Microsoft.Data.SqlClient;
-using Elfie.Serialization;
-using AstronBase.ViewModels;
-using System.Drawing.Printing;
-using AstronBase.Domain.Entity;
-using Microsoft.AspNetCore.Authorization;
-using AstronBase.DAL;
+
 namespace AstronBase.Controllers
 {
     public class CompanyController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly ICompanyService _companyService;
 
-        public CompanyController(ApplicationDbContext context)
+        public CompanyController(ICompanyService companyService)
         {
-            _context = context;
+            _companyService = companyService;
         }
 
-
-        // GET: Companies
         public async Task<IActionResult> Index(string searchString, int page = 1)
         {
             ViewBag.CurrentFilter = searchString;
-            var companies = from c in _context.Company select c;
 
-            if (!String.IsNullOrEmpty(searchString))
+            var response = await _companyService.GetCompanies();
+
+            if (!string.IsNullOrEmpty(searchString))
             {
-                companies = companies.Where(s =>
-                    s.Name.Contains(searchString) || s.DirectorName.Contains(searchString));
+
+                response = await _companyService.GetCompanyBySearch(searchString);
+
             }
 
-            int pageSize = 10;
-            var count = await companies.CountAsync();
-            var items = await companies.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
+            const int pageSize = 5;
 
-            PageViewModel pageViewModel = new PageViewModel(count, page, pageSize);
-            IndexViewModel viewModel = new IndexViewModel(items, pageViewModel);
+            var count = response.Data.Count();
+
+            var items = response.Data.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+
+            var pageViewModel = new PageViewModel(count, page, pageSize);
+
+            var viewModel = new IndexViewModel(items, pageViewModel);
+
             return View(viewModel);
         }
 
-        // GET: Companies/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(int id)
         {
-            if (id == null || _context.Company == null)
+
+            var response = await _companyService.GetCommpany(id);
+
+            if (response.StatusCode == Domain.Enum.StatusCode.OK)
             {
-                return NotFound();
+                return View(response.Data);
             }
 
-            var company = await _context.Company
-                .FirstOrDefaultAsync(m => m.Id == id);
-
-            if (company == null)
-            {
-                return NotFound();
-            }
-
-            return View(company);
+            return Redirect("Error");
         }
 
-        // GET: Companies/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Companies/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(
-            [Bind(
-                "Id,Name,DirectorName,PositionName,StatuteName,Unn,Address,CheckingAccount,Bank,PhoneNumber,Email,Note")]
-            Company company)
+        public async Task<IActionResult> Create(CompanyViewModel model)
+
         {
             if (ModelState.IsValid)
             {
-                _context.Add(company);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                if (model.Id == 0)
+                {
+                    await _companyService.CreateCompany(model);
+
+                    return RedirectToAction("Index");
+                }
+
+                await _companyService.Edit(model.Id, model);
             }
 
-            return View(company);
+            return View();
         }
 
-        // GET: Companies/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int id)
         {
-            if (id == null || _context.Company == null)
+     
+            var response = await _companyService.GetCommpany(id);
+
+            if (response.StatusCode == Domain.Enum.StatusCode.OK)
             {
-                return NotFound();
+                return View(response.Data);
             }
 
-            var company = await _context.Company.FindAsync(id);
-
-            if (company == null)
-            {
-                return NotFound();
-            }
-
-            return View(company);
+            return NotFound();
         }
 
-        // POST: Companies/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id,
-            [Bind(
-                "Id,Name,DirectorName,PositionName,StatuteName,Unn,Address,CheckingAccount,Bank,PhoneNumber,Email,Note")]
-            Company company)
+        public async Task<IActionResult> Edit(int id, CompanyViewModel model)
         {
-            if (id != company.Id)
-            {
-                return NotFound();
-            }
-
+     
             if (ModelState.IsValid)
             {
-                try
+                if (model.Id == 0)
                 {
-                    _context.Update(company);
-                    await _context.SaveChangesAsync();
+                    await _companyService.CreateCompany(model);
                 }
-                catch (DbUpdateConcurrencyException)
+                else
                 {
-                    if (!CompanyExists(company.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    await _companyService.Edit(model.Id, model);
                 }
 
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Index");
             }
 
-            return View(company);
+            return Redirect("Error");
         }
 
-        // GET: Companies/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(int id)
         {
-            if (id == null || _context.Company == null)
+  
+            if (_companyService.GetCommpany(id) == null)
             {
                 return NotFound();
             }
 
-            var company = await _context.Company
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var response = await _companyService.GetCommpany(id);
 
-            if (company == null)
+            if (response == null)
             {
                 return NotFound();
             }
 
-            return View(company);
+            return View(response.Data);
         }
 
-        // POST: Companies/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.Company == null)
+
+            var response = await _companyService.GetCommpany(id);
+
+            if (response == null)
             {
-                return Problem("Entity set 'AstronBaseContext.Company'  is null.");
+                return Problem("Entity set 'AstronBaseContext.Client'  is null.");
             }
 
-            var company = await _context.Company.FindAsync(id);
-
-            if (company != null)
+            if (response.Data != null)
             {
-                _context.Company.Remove(company);
+                await _companyService.DeleteCompany(id);
             }
 
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool CompanyExists(int id)
-        {
-            return (_context.Company?.Any(e => e.Id == id)).GetValueOrDefault();
-        }
     }
 }

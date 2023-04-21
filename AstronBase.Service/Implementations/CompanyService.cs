@@ -101,6 +101,33 @@ namespace AstronBase.Service.Implementations
             }
         }
 
+        public async Task<IBaseResponse<IEnumerable<Company>>> GetCompanyBySearch(string search)
+        {
+            var baseResponse = new BaseResponse<IEnumerable<Company>>();
+            try
+            {
+                var company = await _companyRepository.GetBySearch(search);
+                if (company == null)
+                {
+                    baseResponse.Description = "Company not found";
+                    baseResponse.StatusCode = StatusCode.InternalServerError;
+                    return baseResponse;
+                }
+
+                baseResponse.Data = company;
+                baseResponse.StatusCode = StatusCode.OK;
+                return baseResponse;
+            }
+            catch (Exception e)
+            {
+                return new BaseResponse<IEnumerable<Company>>()
+                {
+                    Description = $"[GetCompanyBySearch] : {e.Message}",
+                    
+                };
+            }
+        }
+
         public async Task<IBaseResponse<bool>> DeleteCompany(int id)
         {
             var baseResponse = new BaseResponse<bool>();

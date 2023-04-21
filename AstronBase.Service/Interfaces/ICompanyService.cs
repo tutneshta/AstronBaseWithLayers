@@ -17,5 +17,7 @@ namespace AstronBase.Service.Interfaces
         Task<IBaseResponse<CompanyViewModel>> CreateCompany(CompanyViewModel model);
 
         Task<IBaseResponse<Company>> Edit(int id, CompanyViewModel model);
+
+        Task<IBaseResponse<IEnumerable<Company>>> GetCompanyBySearch(string search);
     }
 }

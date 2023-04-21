@@ -18,6 +18,9 @@ namespace AstronBase
             builder.Services.AddScoped<IStoreService, StoreService>();
             builder.Services.AddScoped<IStoreRepository, StoreRepository>();
 
+            builder.Services.AddScoped<ICompanyService, CompanyService>();
+            builder.Services.AddScoped<ICompanyRepository, CompanyRepository>();
+
         }
     }
 }

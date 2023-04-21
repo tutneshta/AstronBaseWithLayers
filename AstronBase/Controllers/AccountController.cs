@@ -1,6 +1,6 @@
 ﻿using AstronBase.Domain.Entity;
+using AstronBase.Domain.ViewModels.Account;
 using AstronBase.Models;
-using AstronBase.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 

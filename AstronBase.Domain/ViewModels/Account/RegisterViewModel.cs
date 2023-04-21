@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Newtonsoft.Json;
 
-namespace AstronBase.ViewModels
+namespace AstronBase.Domain.ViewModels.Account
 {
     public class RegisterViewModel
     {

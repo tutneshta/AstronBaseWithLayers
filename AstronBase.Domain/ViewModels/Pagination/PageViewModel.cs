@@ -1,4 +1,4 @@
-﻿namespace AstronBase.ViewModels
+﻿namespace AstronBase.Domain.ViewModels.Pagination
 {
     public class PageViewModel
     {

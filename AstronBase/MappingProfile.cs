@@ -1,5 +1,4 @@
 ﻿using AstronBase.Models;
-using AstronBase.ViewModels;
 using AutoMapper;
 
 namespace AstronBase

@@ -1,7 +1,6 @@
-﻿using Microsoft.Identity.Client;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace AstronBase.ViewModels
+namespace AstronBase.Domain.ViewModels.Account
 {
     public class LoginViewModel
     {
