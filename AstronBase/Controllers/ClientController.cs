@@ -1,4 +1,6 @@
 ﻿using AstronBase.Domain.ViewModels.Client;
+using AstronBase.Domain.ViewModels.Pagination;
+
 using AstronBase.Service.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,16 +21,31 @@ namespace AstronBase.Controllers
         /// </summary>
         /// <returns></returns>
         // GET
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchString, int page = 1)
         {
+ 
+            ViewBag.CurrentFilter = searchString;
+
             var response = await _clientService.GetClients();
 
-            //if (response.StatusCode == Domain.Enum.StatusCode.OK)
-            //{
-                return View(response.Data);
-            //}
+            if (!string.IsNullOrEmpty(searchString))
+            {
 
-           // return Redirect("Error");
+                response = await _clientService.GetClientBySearch(searchString);
+
+            }
+
+            const int pageSize = 5;
+
+            var count = response.Data.Count();
+
+            var items = response.Data.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+
+            var pageViewModel = new PageViewModel(count, page, pageSize);
+
+            var viewModel = new ClientIndexViewModel(items, pageViewModel);
+
+            return View(viewModel);
         }
 
         public async Task<IActionResult> Details(int id)

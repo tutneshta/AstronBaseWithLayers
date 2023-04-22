@@ -40,6 +40,7 @@ namespace AstronBase.DAL.Repositories
         public async Task<Store> Update(Store entity)
         {
             _db.Store.Update(entity);
+
             await _db.SaveChangesAsync();
 
             return entity;

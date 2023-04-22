@@ -17,5 +17,8 @@ namespace AstronBase.Service.Interfaces
         Task<IBaseResponse<ClientViewModel>> CreateClient(ClientViewModel model);
 
         Task<IBaseResponse<Client>> Edit(int id, ClientViewModel model);
+
+        Task<IBaseResponse<IEnumerable<Client>>> GetClientBySearch(string search);
+        
     }
 }
