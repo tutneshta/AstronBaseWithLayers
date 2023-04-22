@@ -78,5 +78,14 @@ namespace AstronBase.DAL.Repositories
         {
             return await _db.Client.FirstOrDefaultAsync(x => x.Name == name);
         }
+
+        public Task<List<Client>> GetBySearch(string search)
+        {
+
+            var client = from c in _db.Client select c;
+
+
+            return _db.Client.Where(c => c.Name.Contains(search)).ToListAsync();
+        }
     }
 }

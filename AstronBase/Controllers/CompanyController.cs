@@ -36,7 +36,7 @@ namespace AstronBase.Controllers
 
             var pageViewModel = new PageViewModel(count, page, pageSize);
 
-            var viewModel = new IndexViewModel(items, pageViewModel);
+            var viewModel = new CompanyIndexViewModel(items, pageViewModel);
 
             return View(viewModel);
         }
