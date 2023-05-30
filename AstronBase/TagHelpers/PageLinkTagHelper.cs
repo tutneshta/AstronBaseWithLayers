@@ -9,7 +9,7 @@ namespace AstronBase.TagHelpers
 {
     public class PageLinkTagHelper : TagHelper
     {
-        readonly IUrlHelperFactory urlHelperFactory;
+        IUrlHelperFactory urlHelperFactory;
 
         public PageLinkTagHelper(IUrlHelperFactory helperFactory)
         {

@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using AstronBase.Domain.ViewModels.Pagination;
-
-namespace AstronBase.Domain.ViewModels.Client
+﻿namespace AstronBase.Domain.ViewModels.Client
 {
     public class ClientViewModel
     {
@@ -10,11 +7,5 @@ namespace AstronBase.Domain.ViewModels.Client
         public string Name { get; set; }
 
         public string PhoneNumber { get; set; }
-
-        public IEnumerable Clients { get; }
-        public PageViewModel PageViewModel { get; }
-
     }
-
-
 }

@@ -35,6 +35,5 @@ namespace AstronBase.DAL
         public DbSet<Store> Store { get; set; } = default!;
 
         public DbSet<TypeRequest> TypeRequest { get; set; } = default!;
-
     }
 }
