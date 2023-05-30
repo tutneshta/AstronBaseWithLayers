@@ -42,6 +42,37 @@ namespace AstronBase.Service.Implementations
                 };
             }
         }
+        /// <summary>
+        /// метод получения клиентов через поле поиска
+        /// </summary>
+        /// <param name="search"></param>
+        /// <returns></returns>
+        public async Task<IBaseResponse<IEnumerable<Client>>> GetClientBySearch(string search)
+        {
+            var baseResponse = new BaseResponse<IEnumerable<Client>>();
+            try
+            {
+                var client = await _clientRepository.GetBySearch(search);
+                if (client == null)
+                {
+                    baseResponse.Description = "Client not found";
+                    baseResponse.StatusCode = StatusCode.InternalServerError;
+                    return baseResponse;
+                }
+
+                baseResponse.Data = client;
+                baseResponse.StatusCode = StatusCode.OK;
+                return baseResponse;
+            }
+            catch (Exception e)
+            {
+                return new BaseResponse<IEnumerable<Client>>()
+                {
+                    Description = $"[GetCompanyBySearch] : {e.Message}",
+
+                };
+            }
+        }
 
         /// <summary>
         /// получение клиента по id
