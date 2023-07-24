@@ -1,6 +1,8 @@
 ﻿using AstronBase.Domain.Entity;
 using AstronBase.Domain.ViewModels.Account;
+using AstronBase.Domain.ViewModels.Users;
 using AstronBase.Models;
+using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,11 +12,13 @@ namespace AstronBase.Controllers
     {
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
+        public IMapper _mapper;
 
-        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager)
+        public AccountController(UserManager<User> userManager, IMapper mapper, SignInManager<User> signInManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _mapper = mapper;
         }
 
         [HttpGet]
@@ -28,7 +32,8 @@ namespace AstronBase.Controllers
         {
             if (ModelState.IsValid)
             {
-                User user = new User { Email = model.Email, UserName = model.Email, Year = model.Year };
+                var user = _mapper.Map<User>(model);
+                //User user = new User { Email = model.Email, UserName = model.Email, Year = model.Year };
                 // добавляем пользователя
                 var result = await _userManager.CreateAsync(user, model.Password);
 
@@ -61,9 +66,11 @@ namespace AstronBase.Controllers
         public async Task<IActionResult> Login(LoginViewModel model)
         {
             if (ModelState.IsValid)
+
             {
-                var result =
-                    await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, false);
+                var user = await _userManager.FindByEmailAsync(model.Email);
+
+                var result = await _signInManager.PasswordSignInAsync(user, model.Password, true, false);
 
                 if (result.Succeeded)
                 {

@@ -2,6 +2,7 @@
 using AstronBase.Domain.ViewModels.Company;
 using AstronBase.Domain.ViewModels.Pagination;
 using AstronBase.Service.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 
 
 namespace AstronBase.Controllers
@@ -15,6 +16,7 @@ namespace AstronBase.Controllers
             _companyService = companyService;
         }
 
+        [Authorize(Roles = "Администратор")]
         public async Task<IActionResult> Index(string searchString, int page = 1)
         {
             ViewBag.CurrentFilter = searchString;

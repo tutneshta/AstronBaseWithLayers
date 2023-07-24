@@ -23,31 +23,38 @@
             </button>
             <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                 <ul class="navbar-nav flex-grow-1">
-                    <div class="dropdown">
-                        <button class="dropbtn">Справочник</button>
-                        <div class="dropdown-content">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Company" asp-action="Index">Организации</a>
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Store" asp-action="index">Магазины</a>
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Client" asp-action="index">Клиенты</a>
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Fiscal" asp-action="index">Фискальные регистраторы</a>
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Engineer" asp-action="index">Инженеры</a>
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Model" asp-action="index">Модели ФР</a>
-                            <a class="nav-link text-dark" asp-area="" asp-controller="StatusBlank" asp-action="index">Статусы бланков</a>
-                            <a class="nav-link text-dark" asp-area="" asp-controller="StatusFiscal" asp-action="index">Статусы ФР</a>
-                            <a class="nav-link text-dark" asp-area="" asp-controller="StatusRequest" asp-action="index">Статусы заявок</a>
-                            <a class="nav-link text-dark" asp-area="" asp-controller="RegisterState" asp-action="index">Реестр ФР</a>
-                            <a class="nav-link text-dark" asp-area="" asp-controller="TypeRequest" asp-action="index">Тип заявки</a>
                     
+                    @if (User.IsInRole("Администратор") || User.IsInRole("Модератор"))
+                    {
+                        <div class="dropdown">
+                            <button class="dropbtn">Справочник</button>
+                            <div class="dropdown-content">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Company" asp-action="Index">Организации</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Store" asp-action="index">Магазины</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Client" asp-action="index">Клиенты</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Fiscal" asp-action="index">Фискальные регистраторы</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Engineer" asp-action="index">Инженеры</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Model" asp-action="index">Модели ФР</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="StatusBlank" asp-action="index">Статусы бланков</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="StatusFiscal" asp-action="index">Статусы ФР</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="StatusRequest" asp-action="index">Статусы заявок</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="RegisterState" asp-action="index">Реестр ФР</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="TypeRequest" asp-action="index">Тип заявки</a>
+
+                            </div>
+
                         </div>
-                 
-                    </div>
+                        
+                         
+                    }
+         
                     <div >
-                        @if(User.Identity.IsAuthenticated)
+                        @if (User.Identity.IsAuthenticated)
                         {
                             <p>@User.Identity.Name</p>
- 
+
                             <form method="post" asp-controller="Account" asp-action="Logout">
-                                <input type="submit" value="Выход" />
+                                <input type="submit" value="Выход"/>
                             </form>
                         }
                         else
