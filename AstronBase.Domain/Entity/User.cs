@@ -5,6 +5,10 @@ namespace AstronBase.Domain.Entity
 {
     public class User : IdentityUser
     {
-        public int Year { get; set; }
+        public string FirstName { get; set; } = string.Empty;
+        public string LastName { get; set; } = string.Empty;
+        public DateTime CreatedData { get; set; } = DateTime.Now;
+        public List<Request> Requests { get; set; } = new();
+        public List<Role> Roles { get; set; } = new();
     }
 }

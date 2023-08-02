@@ -28,6 +28,8 @@ namespace AstronBase
 
             builder.Services.AddScoped<IRoleService, RoleService>();
 
+            builder.Services.AddScoped<IAccountService, AccountService>();
+
             builder.Services.AddSingleton(mapper1);
 
         }
