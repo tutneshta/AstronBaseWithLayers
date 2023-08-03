@@ -38,6 +38,13 @@
                              </div>
 
                          </div>
+                            <div class="dropdown">
+                                <button class="dropbtn">Пользователи</button>
+                                <div class="dropdown-content">
+                                    <a class="nav-link" asp-area="" asp-controller="Account" asp-action="GetAccounts">Пользователи</a>
+                                    <a class="nav-link" asp-area="" asp-controller="Role" asp-action="GetRoles">Роли</a>
+                                </div>
+                            </div>
                   
                          
                         }
@@ -46,7 +53,7 @@
 
                     @if (User.Identity.IsAuthenticated)
                     {
-                        <form method="post" asp-controller="Account" asp-action="Logout">
+                        <form method="post" asp-controller="Account" asp-action="LogoutAccount">
                             <p class="badge bg-success text-white nav-item flex-grow-1" style="line-height: 2; margin-bottom: 0;">@User.Identity.Name</p>
                             <input class="btn btn-sm btn-primary nav-item flex-grow-1" style="margin-bottom: 0;" type="submit" value="Выход"/>
                         </form>
