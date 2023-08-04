@@ -14,9 +14,9 @@ namespace AstronBase.Service.Interfaces
 
         Task<IBaseResponse<bool>> DeleteClient(int id);
 
-        Task<IBaseResponse<ClientViewModel>> CreateClient(ClientViewModel model);
+        Task<IBaseResponse<ClientCreateViewModel>> CreateClient(ClientCreateViewModel model);
 
-        Task<IBaseResponse<Client>> Edit(int id, ClientViewModel model);
+        Task<IBaseResponse<Client>> Edit(int id, ClientEditViewModel model);
 
         Task<IBaseResponse<IEnumerable<Client>>> GetClientBySearch(string search);
     }

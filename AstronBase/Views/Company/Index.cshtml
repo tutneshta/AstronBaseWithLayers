@@ -98,9 +98,9 @@
                 @Html.DisplayFor(modelItem => item.Note)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Изменить</a>
-                <a asp-action="Details" asp-route-id="@item.Id">Подробно</a>
-                <a asp-action="Delete" asp-route-id="@item.Id">Удалить</a>
+                <a class="btn btn-outline-info button" asp-action="Edit" asp-route-id="@item.Id">Изменить</a>
+                <a class="btn btn-outline-secondary" asp-action="Details" asp-route-id="@item.Id">Подробно</a>
+                <a class="btn btn-outline-danger" asp-action="Delete" asp-route-id="@item.Id">Удалить</a>
             </td>
         </tr>
     }

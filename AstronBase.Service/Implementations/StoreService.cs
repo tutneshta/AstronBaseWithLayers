@@ -178,9 +178,6 @@ namespace AstronBase.Service.Implementations
                 store.CompanyId = model.CompanyId;
                 store.Id = model.Id;
 
-
-            
-
                 await _storeRepository.Update(store);
 
                 return baseResponse;
