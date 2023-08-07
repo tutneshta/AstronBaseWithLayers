@@ -53,6 +53,8 @@ namespace AstronBase.DAL.Repositories
 
         public Task<List<Store>> GetBySearch(string search)
         {
+            var client = from c in _db.Store select c;
+
             return _db.Store.Where(c => c.Name.Contains(search)).ToListAsync();
         }
     }

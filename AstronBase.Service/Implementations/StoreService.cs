@@ -191,5 +191,32 @@ namespace AstronBase.Service.Implementations
                 };
             }
         }
+
+        public async Task<IBaseResponse<IEnumerable<Store>>> GetStoreBySearch(string search)
+        {
+            var baseResponse = new BaseResponse<IEnumerable<Store>>();
+            try
+            {
+                var store = await _storeRepository.GetBySearch(search);
+                if (store == null)
+                {
+                    baseResponse.Description = "Store not found";
+                    baseResponse.StatusCode = StatusCode.InternalServerError;
+                    return baseResponse;
+                }
+
+                baseResponse.Data = store;
+                baseResponse.StatusCode = StatusCode.OK;
+                return baseResponse;
+            }
+            catch (Exception e)
+            {
+                return new BaseResponse<IEnumerable<Store>>()
+                {
+                    Description = $"[GetStoreBySearch] : {e.Message}",
+
+                };
+            }
+        }
     }
 }

@@ -9,10 +9,14 @@ using Microsoft.EntityFrameworkCore;
 using AstronBase.Models;
 using System.Data;
 using AstronBase.DAL;
+using AstronBase.Domain.ViewModels.Client;
+using AstronBase.Domain.ViewModels.Pagination;
 using AstronBase.Domain.ViewModels.Store;
 using AstronBase.Service.Interfaces;
 
 using static System.Runtime.InteropServices.JavaScript.JSType;
+using AstronBase.Service.Implementations;
+using Microsoft.AspNetCore.Authorization;
 
 
 namespace AstronBase.Controllers
@@ -33,17 +37,44 @@ namespace AstronBase.Controllers
         /// request to withdraw all stores
         /// </summary>
         /// <returns></returns>
-        [HttpGet]
-        public async Task<IActionResult> Index()
+        ///
+
+      
+        //[Authorize(Roles = "Администратор")]
+        public async Task<IActionResult> Index(string searchString, int page = 1)
         {
+            //var response = await _storeService.GetStores();
+
+            //if (response.StatusCode == Domain.Enum.StatusCode.OK)
+            //{
+            //    return View(response.Data);
+            //}
+
+            //return Redirect("Error");
+
+
+            ViewBag.CurrentFilter = searchString;
+
             var response = await _storeService.GetStores();
 
-            if (response.StatusCode == Domain.Enum.StatusCode.OK)
+            if (!string.IsNullOrEmpty(searchString))
             {
-                return View(response.Data);
+
+                response = await _storeService.GetStoreBySearch(searchString);
+
             }
 
-            return Redirect("Error");
+            const int pageSize = 5;
+
+            var count = response.Data.Count();
+
+            var items = response.Data.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+
+            var pageViewModel = new PageViewModel(count, page, pageSize);
+
+            var viewModel = new StoreIndexViewModel(items, pageViewModel);
+
+            return View(viewModel);
         }
 
         [HttpGet]
