@@ -98,11 +98,13 @@ namespace AstronBase.Controllers
         {
             if (ModelState.IsValid)
             {
-   
+                if (model.Id == 0)
+                {
                     await _clientService.CreateClient(model);
+
                     return RedirectToAction("Index");
-                
-              
+                }
+
             }
 
             return View();

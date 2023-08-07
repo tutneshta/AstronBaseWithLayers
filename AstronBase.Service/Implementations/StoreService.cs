@@ -130,9 +130,9 @@ namespace AstronBase.Service.Implementations
             }
         }
 
-        public async Task<IBaseResponse<StoreViewModel>> CreateStore(StoreViewModel model)
+        public async Task<IBaseResponse<StoreCreateViewModel>> CreateStore(StoreCreateViewModel model)
         {
-            var baseResponse = new BaseResponse<StoreViewModel>();
+            var baseResponse = new BaseResponse<StoreCreateViewModel>();
 
             try
             {
@@ -149,7 +149,7 @@ namespace AstronBase.Service.Implementations
             }
             catch (Exception e)
             {
-                return new BaseResponse<StoreViewModel>()
+                return new BaseResponse<StoreCreateViewModel>()
                 {
                     Description = $"[CreateStore] : {e.Message}",
                     StatusCode = StatusCode.StoreNotFound
@@ -159,7 +159,7 @@ namespace AstronBase.Service.Implementations
             return baseResponse;
         }
 
-        public async Task<IBaseResponse<Store>> Edit(int id, StoreViewModel model)
+        public async Task<IBaseResponse<Store>> Edit(int id, StoreEditViewModel model)
         {
             var baseResponse = new BaseResponse<Store>();
 

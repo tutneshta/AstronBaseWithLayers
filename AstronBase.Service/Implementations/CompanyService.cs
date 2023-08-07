@@ -157,9 +157,9 @@ namespace AstronBase.Service.Implementations
             }
         }
 
-        public async Task<IBaseResponse<CompanyViewModel>> CreateCompany(CompanyViewModel model)
+        public async Task<IBaseResponse<CompanyCreateViewModel>> CreateCompany(CompanyCreateViewModel model)
         {
-            var baseResponse = new BaseResponse<CompanyViewModel>();
+            var baseResponse = new BaseResponse<CompanyCreateViewModel>();
 
             try
             {
@@ -182,7 +182,7 @@ namespace AstronBase.Service.Implementations
             }
             catch (Exception e)
             {
-                return new BaseResponse<CompanyViewModel>()
+                return new BaseResponse<CompanyCreateViewModel>()
                 {
                     Description = $"[CreateCompany] : {e.Message}",
                     StatusCode = StatusCode.CompanyNotFound
@@ -192,7 +192,7 @@ namespace AstronBase.Service.Implementations
             return baseResponse;
         }
 
-        public async Task<IBaseResponse<Company>> Edit(int id, CompanyViewModel model)
+        public async Task<IBaseResponse<Company>> Edit(int id, CompanyEditViewModel model)
         {
             var baseResponse = new BaseResponse<Company>();
             var company = await _companyRepository.Get(id);

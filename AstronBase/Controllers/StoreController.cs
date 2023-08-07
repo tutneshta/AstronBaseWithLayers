@@ -77,7 +77,7 @@ namespace AstronBase.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(StoreViewModel model)
+        public async Task<IActionResult> Create(StoreCreateViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -88,7 +88,6 @@ namespace AstronBase.Controllers
                     return RedirectToAction("Index");
                 }
 
-                await _storeService.Edit(model.Id, model);
             }
 
             return View();
@@ -141,23 +140,23 @@ namespace AstronBase.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name, CompanyId")] StoreViewModel model)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name, CompanyId")] StoreEditViewModel model)
         {
             if (ModelState.IsValid)
             {
-                if (model.Id == 0)
+                if (model.Id != 0)
                 {
                     await _storeService.Edit(model.Id, model);
                 }
                 else
                 {
-                    await _storeService.Edit(model.Id, model);
+                    return Redirect("Error");
                 }
 
                 return RedirectToAction("Index");
             }
-
             return Redirect("Error");
+
 
             CompaniesDropDownList(model.CompanyId);
         }

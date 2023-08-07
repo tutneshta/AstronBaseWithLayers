@@ -63,7 +63,7 @@ namespace AstronBase.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(CompanyViewModel model)
+        public async Task<IActionResult> Create(CompanyCreateViewModel model)
 
         {
             if (ModelState.IsValid)
@@ -75,7 +75,6 @@ namespace AstronBase.Controllers
                     return RedirectToAction("Index");
                 }
 
-                await _companyService.Edit(model.Id, model);
             }
 
             return View();
@@ -96,20 +95,14 @@ namespace AstronBase.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, CompanyViewModel model)
+        public async Task<IActionResult> Edit(int id, CompanyEditViewModel model)
         {
      
             if (ModelState.IsValid)
             {
-                if (model.Id == 0)
-                {
-                    await _companyService.CreateCompany(model);
-                }
-                else
-                {
-                    await _companyService.Edit(model.Id, model);
-                }
 
+                await _companyService.Edit(model.Id, model);
+                    
                 return RedirectToAction("Index");
             }
 

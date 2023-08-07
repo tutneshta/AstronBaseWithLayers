@@ -14,9 +14,9 @@ namespace AstronBase.Service.Interfaces
 
         Task<IBaseResponse<bool>> DeleteCompany(int id);
 
-        Task<IBaseResponse<CompanyViewModel>> CreateCompany(CompanyViewModel model);
+        Task<IBaseResponse<CompanyCreateViewModel>> CreateCompany(CompanyCreateViewModel model);
 
-        Task<IBaseResponse<Company>> Edit(int id, CompanyViewModel model);
+        Task<IBaseResponse<Company>> Edit(int id, CompanyEditViewModel model);
 
         Task<IBaseResponse<IEnumerable<Company>>> GetCompanyBySearch(string search);
     }
