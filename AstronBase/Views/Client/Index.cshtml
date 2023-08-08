@@ -27,7 +27,12 @@
         <th>
             Телефон
         </th>
-        <th></th>
+        <th>
+            Магазин
+        </th>
+        <th>
+            Организация
+        </th>
     </tr>
     </thead>
     <tbody>
@@ -39,6 +44,13 @@
             <td>
                 @Html.DisplayFor(modelItem => item.PhoneNumber)
             </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Store)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Company.Name)
+            </td>
+
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.Id">Details</a> |

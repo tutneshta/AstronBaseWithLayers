@@ -39,20 +39,10 @@ namespace AstronBase.Controllers
         /// <returns></returns>
         ///
 
-      
-        //[Authorize(Roles = "Администратор")]
+        
         public async Task<IActionResult> Index(string searchString, int page = 1)
         {
-            //var response = await _storeService.GetStores();
-
-            //if (response.StatusCode == Domain.Enum.StatusCode.OK)
-            //{
-            //    return View(response.Data);
-            //}
-
-            //return Redirect("Error");
-
-
+     
             ViewBag.CurrentFilter = searchString;
 
             var response = await _storeService.GetStores();
