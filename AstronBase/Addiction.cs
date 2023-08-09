@@ -32,6 +32,9 @@ namespace AstronBase
 
             builder.Services.AddSingleton(mapper1);
 
+            builder.Services.AddScoped<IFiscalRepository, FiscalRepository>();
+            builder.Services.AddScoped<IFiscalService, FiscalService>();
+
         }
     }
 }

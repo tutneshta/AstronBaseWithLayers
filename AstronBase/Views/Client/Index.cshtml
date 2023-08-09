@@ -6,10 +6,10 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<h1>Клиенты</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create">Новый клиент</a>
 </p>
 @using (Html.BeginForm())
 {
@@ -45,7 +45,7 @@
                 @Html.DisplayFor(modelItem => item.PhoneNumber)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Store)
+                @Html.DisplayFor(modelItem => item.Store.Name)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Company.Name)

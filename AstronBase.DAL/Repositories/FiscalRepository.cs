@@ -29,12 +29,24 @@ namespace AstronBase.DAL.Repositories
 
         public async Task<Fiscal> Get(int id)
         {
-            return await _db.Fiscal.FirstOrDefaultAsync(x => x.Id == id);
+            return await _db.Fiscal.Include(c => c.Company)
+                .Include(s => s.Store)
+                .Include(e => e.Engineer)
+                .Include(s => s.StatusFiscal)
+                .Include(m => m.Model)
+                .Include(r => r.RegisterState)
+                .FirstOrDefaultAsync(x => x.Id == id);
         }
 
-        public Task<List<Fiscal>> Select()
+        public async Task<List<Fiscal>> Select()
         {
-            return _db.Fiscal.ToListAsync();
+            return await _db.Fiscal.Include(c => c.Company)
+                .Include(s => s.Store)
+                .Include(e => e.Engineer)
+                .Include(s => s.StatusFiscal)
+                .Include(m => m.Model)
+                .Include(r => r.RegisterState)
+                .ToListAsync();
         }
 
         public async Task<bool> Delete(Fiscal entity)

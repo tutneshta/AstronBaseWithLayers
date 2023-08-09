@@ -14,9 +14,6 @@ using AstronBase.Domain.ViewModels.Pagination;
 using AstronBase.Domain.ViewModels.Store;
 using AstronBase.Service.Interfaces;
 
-using static System.Runtime.InteropServices.JavaScript.JSType;
-using AstronBase.Service.Implementations;
-using Microsoft.AspNetCore.Authorization;
 
 
 namespace AstronBase.Controllers
