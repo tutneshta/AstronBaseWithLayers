@@ -55,7 +55,9 @@ namespace AstronBase.DAL.Repositories
         {
             var client = from c in _db.Store select c;
 
-            return _db.Store.Where(c => c.Name.Contains(search)).ToListAsync();
+            return _db.Store.Where(c => c.Name.Contains(search))
+                .Include(c => c.Company)
+                .ToListAsync();
         }
     }
 }
