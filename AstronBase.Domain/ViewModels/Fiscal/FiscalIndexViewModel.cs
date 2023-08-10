@@ -16,6 +16,7 @@ namespace AstronBase.Domain.ViewModels.Fiscal
         {
             Fiscals = fiscals;
             PageViewModel = viewModel;
+            
         }
     }
 }
