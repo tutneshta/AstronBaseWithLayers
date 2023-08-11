@@ -9,5 +9,6 @@
         CompanyNotFound = 3,
         FiscalNotFound = 4,
         EngineerNotFound = 5,
+        ModelNotFound = 6,
     }
 }
