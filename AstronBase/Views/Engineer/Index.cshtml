@@ -1,35 +1,44 @@
 ﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
-@model IEnumerable<AstronBase.Domain.Entity.Engineer>
+@model AstronBase.Domain.ViewModels.Engineer.EngineerIndexViewModel
+@addTagHelper *, MvcApp
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" />
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Инженеры";
 }
 
-<h1>Index</h1>
+<h1>Инженеры</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create">Новый инженер</a>
 </p>
+@using (Html.BeginForm())
+{
+    <p>
+        @Html.TextBox("SearchString")  
+        <input type="submit" value="Search" />
+    </p>
+}
 <table class="table">
     <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.FirstName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.LastName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PhoneNumber)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Email)
-            </th>
-            <th></th>
-        </tr>
+    <tr>
+        <th>
+            Имя
+        </th>
+        <th>
+            Фамилия
+        </th>
+        <th>
+            Телефон
+        </th>
+        <th>
+            Email
+        </th>
+        <th></th>
+    </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+    @foreach (var item in Model.Engineers) {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.FirstName)
@@ -49,6 +58,25 @@
                 <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
             </td>
         </tr>
-}
+    }
     </tbody>
 </table>
+
+<page-link page-model="Model.PageViewModel" page-action="Index"></page-link>
+
+<p>
+    @if (Model.PageViewModel.HasPreviousPage)
+    {
+        <a asp-action="Index"
+           asp-route-page="@(Model.PageViewModel.PageNumber - 1)" class="glyphicon glyphicon-chevron-left">
+            Назад
+        </a>
+    }
+    @if (Model.PageViewModel.HasNextPage)
+    {
+        <a asp-action="Index"
+           asp-route-page="@(Model.PageViewModel.PageNumber + 1)" class="glyphicon glyphicon-chevron-right">
+            Вперед
+        </a>
+    }
+</p>

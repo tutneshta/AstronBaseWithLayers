@@ -7,6 +7,7 @@
         ClientNotFound = 1,
         StoreNotFound = 2,
         CompanyNotFound = 3,
-        FiscalNotFound = 4
+        FiscalNotFound = 4,
+        EngineerNotFound = 5,
     }
 }

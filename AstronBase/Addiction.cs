@@ -35,6 +35,9 @@ namespace AstronBase
             builder.Services.AddScoped<IFiscalRepository, FiscalRepository>();
             builder.Services.AddScoped<IFiscalService, FiscalService>();
 
+            builder.Services.AddScoped<IEngineerRepository, EngineerRepository>();
+            builder.Services.AddScoped<IEngineerService, EngineerService>();
+
         }
     }
 }
