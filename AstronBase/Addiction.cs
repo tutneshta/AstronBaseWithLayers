@@ -38,6 +38,9 @@ namespace AstronBase
             builder.Services.AddScoped<IEngineerRepository, EngineerRepository>();
             builder.Services.AddScoped<IEngineerService, EngineerService>();
 
+            builder.Services.AddScoped<IModelRepository, ModelRepository>();
+            builder.Services.AddScoped<IModelService, ModelService>();
+
         }
     }
 }
