@@ -10,5 +10,6 @@
         FiscalNotFound = 4,
         EngineerNotFound = 5,
         ModelNotFound = 6,
+        RegisterState = 7,
     }
 }
