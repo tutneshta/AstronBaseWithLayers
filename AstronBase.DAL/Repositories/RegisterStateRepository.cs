@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AstronBase.DAL.Repositories
 {
-    internal class RegisterStateRepository : IRegisterStateRepository
+    public class RegisterStateRepository : IRegisterStateRepository
     {
         private readonly ApplicationDbContext _db;
 

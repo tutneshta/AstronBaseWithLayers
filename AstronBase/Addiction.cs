@@ -41,6 +41,9 @@ namespace AstronBase
             builder.Services.AddScoped<IModelRepository, ModelRepository>();
             builder.Services.AddScoped<IModelService, ModelService>();
 
+            builder.Services.AddScoped<IRegisterStateService, RegisterStateService>();
+            builder.Services.AddScoped<IRegisterStateRepository, RegisterStateRepository>();
+
         }
     }
 }
