@@ -118,7 +118,7 @@ namespace AstronBase.Controllers
 
             if (response == null)
             {
-                return Problem("Entity set 'ApplicationDbContext.RegisterState'  is null.");
+                return Problem("Entity set 'ApplicationDbContext.RegisterStateNotFound'  is null.");
             }
 
             if (response.Data != null)

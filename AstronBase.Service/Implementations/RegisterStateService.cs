@@ -119,8 +119,8 @@ namespace AstronBase.Service.Implementations
 
                 if (registerState == null)
                 {
-                    baseResponse.Description = "RegisterState not found";
-                    baseResponse.StatusCode = StatusCode.RegisterState;
+                    baseResponse.Description = "RegisterStateNotFound not found";
+                    baseResponse.StatusCode = StatusCode.RegisterStateNotFound;
                     return baseResponse;
                 }
 
@@ -133,7 +133,7 @@ namespace AstronBase.Service.Implementations
                 return new BaseResponse<bool>()
                 {
                     Description = $"[DeleteRegisterState] : {e.Message}",
-                    StatusCode = StatusCode.RegisterState
+                    StatusCode = StatusCode.RegisterStateNotFound
                 };
             }
         }
@@ -159,7 +159,7 @@ namespace AstronBase.Service.Implementations
                 return new BaseResponse<RegisterStateCreateViewModel>()
                 {
                     Description = $"[CreateRegisterState] : {e.Message}",
-                    StatusCode = StatusCode.RegisterState
+                    StatusCode = StatusCode.RegisterStateNotFound
                 };
             }
 
@@ -176,8 +176,8 @@ namespace AstronBase.Service.Implementations
 
                 if (registerState == null)
                 {
-                    baseResponse.Description = "RegisterState not found";
-                    baseResponse.StatusCode = StatusCode.RegisterState;
+                    baseResponse.Description = "RegisterStateNotFound not found";
+                    baseResponse.StatusCode = StatusCode.RegisterStateNotFound;
                     return baseResponse;
                 }
 
@@ -195,7 +195,7 @@ namespace AstronBase.Service.Implementations
                 return new BaseResponse<RegisterState>()
                 {
                     Description = $"[Edit] : {e.Message}",
-                    StatusCode = StatusCode.RegisterState
+                    StatusCode = StatusCode.RegisterStateNotFound
                 };
             }
         }
@@ -208,7 +208,7 @@ namespace AstronBase.Service.Implementations
                 var registerState = await _registerStateRepository.GetBySearch(search);
                 if (registerState == null)
                 {
-                    baseResponse.Description = "RegisterState not found";
+                    baseResponse.Description = "RegisterStateNotFound not found";
                     baseResponse.StatusCode = StatusCode.InternalServerError;
                     return baseResponse;
                 }
