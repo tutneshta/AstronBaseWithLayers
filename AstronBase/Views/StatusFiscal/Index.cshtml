@@ -1,36 +1,60 @@
 ﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
-@model IEnumerable<AstronBase.Domain.Entity.StatusFiscal>
+@model AstronBase.Domain.ViewModels.StatusFiscal.StatusFiscalIndexViewModel
 
 @{
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<h1>Статус фискального регистратора</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create">Новый статус</a>
 </p>
+@using (Html.BeginForm())
+{
+    <p>
+        @Html.TextBox("SearchString")
+        <input type="submit" value="Search" />
+    </p>
+}
 <table class="table">
     <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th></th>
-        </tr>
+    <tr>
+        <th>
+            Название
+        </th>
+        <th></th>
+    </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+    @foreach (var item in Model.StatusFiscals) {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.Name)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                    <a class="btn btn-outline-info button" asp-action="Edit" asp-route-id="@item.Id">Изменить</a>
+                    <a class="btn btn-outline-secondary" asp-action="Details" asp-route-id="@item.Id">Подробно</a>
             </td>
         </tr>
-}
+    }
     </tbody>
 </table>
+<page-link page-model="Model.PageViewModel" page-action="Index"></page-link>
+
+<p>
+    @if (Model.PageViewModel.HasPreviousPage)
+    {
+        <a asp-action="Index"
+           asp-route-page="@(Model.PageViewModel.PageNumber - 1)" class="glyphicon glyphicon-chevron-left">
+            Назад
+        </a>
+    }
+    @if (Model.PageViewModel.HasNextPage)
+    {
+        <a asp-action="Index"
+           asp-route-page="@(Model.PageViewModel.PageNumber + 1)" class="glyphicon glyphicon-chevron-right">
+            Вперед
+        </a>
+    }
+</p>

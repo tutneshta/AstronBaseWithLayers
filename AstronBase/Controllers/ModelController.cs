@@ -117,7 +117,7 @@ namespace AstronBase.Controllers
 
             if (response == null)
             {
-                return Problem("Entity set 'AstronBaseContext.Store'  is null.");
+                return Problem("Entity set 'Context.Model'  is null.");
             }
 
             if (response.Data != null)

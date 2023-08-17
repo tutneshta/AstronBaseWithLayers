@@ -12,5 +12,6 @@
         ModelNotFound = 6,
         RegisterStateNotFound = 7,
         StatusBlankNotFound = 8,
+        StatusFiscalNotFound = 9,
     }
 }
