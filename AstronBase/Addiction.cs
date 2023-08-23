@@ -50,6 +50,9 @@ namespace AstronBase
             builder.Services.AddScoped<IStatusFiscalService, StatusFiscalService>();
             builder.Services.AddScoped<IStatusFiscalRepository, StatusFiscalRepository>();
 
+            builder.Services.AddScoped<IRequestService, RequestService>();
+            builder.Services.AddScoped<IRequestRepository, RequestRepository>();
+
         }
     }
 }

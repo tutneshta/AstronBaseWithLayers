@@ -13,5 +13,6 @@
         RegisterStateNotFound = 7,
         StatusBlankNotFound = 8,
         StatusFiscalNotFound = 9,
+        RequestNotFound = 10,
     }
 }

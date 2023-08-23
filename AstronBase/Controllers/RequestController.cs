@@ -10,170 +10,228 @@ using Microsoft.EntityFrameworkCore;
 
 using AstronBase.Models;
 using AstronBase.DAL;
+using AstronBase.Service.Interfaces;
+using AstronBase.Domain.ViewModels.Client;
+using AstronBase.Domain.ViewModels.Pagination;
+using AstronBase.Domain.ViewModels.Request;
+using AstronBase.Service.Implementations;
+using Microsoft.VisualBasic.CompilerServices;
 
 namespace AstronBase.Controllers
 {
     public class RequestController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly ApplicationDbContext _db;
+        private readonly IRequestService _requestService;
 
-        public RequestController(ApplicationDbContext context)
+        public RequestController(ApplicationDbContext db, IRequestService requestService)
         {
-            _context = context;
+            _db = db;
+            _requestService = requestService;
         }
 
-        // GET: Requests
-        public async Task<IActionResult> Index()
+        private void CompaniesDropDownList(object selectedCompany = null)
         {
-            return _context.Request != null
-                ? View(await _context.Request.ToListAsync())
-                : Problem("Entity set 'AstronBaseContext.Request'  is null.");
+            var companyQuery = from d in _db.Company
+                orderby d.Name
+                select d;
+
+            ViewBag.CompanyId = new SelectList(companyQuery, "Id", "Name", selectedCompany);
         }
 
-        // GET: Requests/Details/5
-        public async Task<IActionResult> Details(int? id)
+        private void StoresDropDownList(object selectedStore = null)
         {
-            if (id == null || _context.Request == null)
+            var storeQuery = from d in _db.Store
+                orderby d.Name
+                select d;
+
+            ViewBag.StoreId = new SelectList(storeQuery, "Id", "Name", selectedStore);
+        }
+
+        private void ClientDropDownList(object selectedClient = null)
+        {
+            var clientQuery = from d in _db.Client
+                orderby d.Name
+                select d;
+
+            ViewBag.ClientId = new SelectList(clientQuery, "Id", "Name", selectedClient);
+        }
+
+        private void FiscalDropDownList(object selectedFiscal = null)
+        {
+            var fiscalQuery = from d in _db.Fiscal
+                orderby d.SerialNumber
+                select d;
+
+            ViewBag.FiscalId = new SelectList(fiscalQuery, "Id", "SerialNumber", selectedFiscal);
+        }
+
+        private void EngineerDropDownList(object selectedEngineer = null)
+        {
+            var engineerQuery = from d in _db.Engineer
+                orderby d.LastName
+                select d;
+
+            ViewBag.EngineerId = new SelectList(engineerQuery, "Id", "LastName", selectedEngineer);
+        }
+
+        private void StatusRequestDropDownList(object selectedStatusRequest = null)
+        {
+            var statusRequestQuery = from d in _db.StatusRequest
+                orderby d.Name
+                select d;
+
+            ViewBag.StatusRequestId = new SelectList(statusRequestQuery, "Id", "Name", selectedStatusRequest);
+        }
+
+        private void TypeRequestDropDownList(object selectedTypeRequest = null)
+        {
+            var typeRequestQuery = from d in _db.TypeRequest
+                orderby d.Name
+                select d;
+
+            ViewBag.TypeRequestId = new SelectList(typeRequestQuery, "Id", "Name", selectedTypeRequest);
+        }
+
+        private void StatusBlankDropDownList(object selectedStatusBlank = null)
+        {
+            var statusBlankQuery = from d in _db.StatusBlank
+                                   orderby d.Name
+                select d;
+
+            ViewBag.StatusBlankId = new SelectList(statusBlankQuery, "Id", "Name", selectedStatusBlank);
+        }
+
+        public async Task<IActionResult> Index(string number, int page = 1)
+        {
+
+            ViewBag.CurrentFilter = number;
+            var response = await _requestService.GetRequests();
+
+            if (number != null)
             {
-                return NotFound();
+
+                response = await _requestService.GetRequestBySearch(number);
+
             }
 
-            var request = await _context.Request
-                .FirstOrDefaultAsync(m => m.Id == id);
+            const int pageSize = 5;
 
-            if (request == null)
-            {
-                return NotFound();
-            }
+            var count = response.Data.Count();
 
-            return View(request);
+            var items = response.Data.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+
+            var pageViewModel = new PageViewModel(count, page, pageSize);
+
+            var viewModel = new RequestIndexViewModel(items, pageViewModel);
+
+            return View(viewModel);
         }
 
-        // GET: Requests/Create
+        public async Task<IActionResult> Details(int id)
+        {
+            var response = await _requestService.GetRequest(id);
+
+            if (response.StatusCode == Domain.Enum.StatusCode.OK)
+            {
+                return View(response.Data);
+            }
+
+            return Redirect("Error");
+        }
+
+        [HttpGet]
         public IActionResult Create()
         {
+            CompaniesDropDownList();
+            StoresDropDownList();
+            ClientDropDownList();
+            EngineerDropDownList();
+            StatusBlankDropDownList();
+            StatusRequestDropDownList();
+            FiscalDropDownList();
+            TypeRequestDropDownList();
             return View();
         }
 
-        // POST: Requests/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(
-            [Bind("Id,Date,Number,NumberPos,ReasonPetition,Works,Note,AktNumber")]
-            Request request)
+        public async Task<IActionResult> Create(RequestCreateViewModel model)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(request);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-
-            return View(request);
-        }
-
-        // GET: Requests/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null || _context.Request == null)
-            {
-                return NotFound();
-            }
-
-            var request = await _context.Request.FindAsync(id);
-
-            if (request == null)
-            {
-                return NotFound();
-            }
-
-            return View(request);
-        }
-
-        // POST: Requests/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id,
-            [Bind("Id,Date,Number,NumberPos,ReasonPetition,Works,Note,AktNumber")]
-            Request request)
-        {
-            if (id != request.Id)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
+                if (model.Id == 0)
                 {
-                    _context.Update(request);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!RequestExists(request.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    await _requestService.CreateRequest(model);
+
+                    return RedirectToAction("Index");
                 }
 
-                return RedirectToAction(nameof(Index));
             }
 
-            return View(request);
+            return View();
         }
 
-        // GET: Requests/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(int id)
         {
-            if (id == null || _context.Request == null)
+            if (_requestService.GetRequest(id) == null)
             {
                 return NotFound();
             }
 
-            var request = await _context.Request
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var response = await _requestService.GetRequest(id);
 
-            if (request == null)
+            if (response == null)
             {
                 return NotFound();
             }
 
-            return View(request);
+            return View(response.Data);
         }
 
-        // POST: Requests/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.Request == null)
+            var response = await _requestService.GetRequest(id);
+
+            if (response == null)
             {
-                return Problem("Entity set 'AstronBaseContext.Request'  is null.");
+                return Problem("Entity set 'Context.Request'  is null.");
             }
 
-            var request = await _context.Request.FindAsync(id);
-
-            if (request != null)
+            if (response.Data != null)
             {
-                _context.Request.Remove(request);
+                await _requestService.DeleteRequest(id);
             }
 
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool RequestExists(int id)
+        public async Task<IActionResult> Edit(int id)
         {
-            return (_context.Request?.Any(e => e.Id == id)).GetValueOrDefault();
+            var response = await _requestService.GetRequest(id);
+
+            if (response.StatusCode == Domain.Enum.StatusCode.OK)
+            {
+                return View(response.Data);
+            }
+
+            return NotFound();
+        }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, RequestEditViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+
+                return RedirectToAction("Index");
+            }
+
+            return Redirect("Error");
         }
     }
 }
