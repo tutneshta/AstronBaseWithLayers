@@ -71,7 +71,7 @@ namespace AstronBase.DAL.Repositories
         public Task<List<Engineer>> GetBySearch(string search)
         {
 
-            var client = from c in _db.Client select c;
+            var client = from c in _db.Engineer select c;
 
 
             return _db.Engineer.Where(c => c.FirstName.Contains(search))
