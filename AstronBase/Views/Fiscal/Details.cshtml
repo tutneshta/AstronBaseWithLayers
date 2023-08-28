@@ -19,28 +19,34 @@
         </dd>
        
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Company.Name)
+            @Html.DisplayNameFor(model => model.CompanyId)
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(modelItem => Model.Company.Name)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Store.Name)
+            @Html.DisplayNameFor(model => model.StoreId)
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Store.Name)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.StatusFiscal.Name)
+            @Html.DisplayNameFor(model => model.StatusFiscalId)
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.StatusFiscal.Name)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Engineer.LastName)
+            @Html.DisplayNameFor(model => model.EngineerId)
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Engineer.FirstName)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.ModelId)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Model.Name)
         </dd>
    
         <dt class = "col-sm-2">
@@ -53,5 +59,38 @@
 </div>
 <div>
     <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModal">
+        Удалить
+    </button>
+    <button type="button" class="btn btn-secondary">
+        <a asp-action="Index">Назад</a>
+    </button>
+    
+</div>
+
+<div data-bs-toggle="modal" class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Удаление фискального регистратора</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+            </div>
+            <div class="modal-body">
+                Удалить фискальный регистратор SN:
+           
+                @Html.DisplayFor(model => model.SerialNumber)
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                <form asp-action="Delete">
+                    <input type="hidden" asp-for="Id" />
+                    <input type="submit" value="Delete" class="btn btn-danger" /> |
+                    <button type="button" class="btn btn-secondary">
+                        <a asp-action="Index">Назад</a>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>

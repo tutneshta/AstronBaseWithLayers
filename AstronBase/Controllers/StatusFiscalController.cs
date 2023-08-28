@@ -9,157 +9,151 @@ using Microsoft.EntityFrameworkCore;
 
 using AstronBase.Models;
 using AstronBase.DAL;
+using AstronBase.Service.Interfaces;
+using AstronBase.Domain.ViewModels.Model;
+using AstronBase.Domain.ViewModels.Pagination;
+using AstronBase.Domain.ViewModels.StatusFiscal;
+using AstronBase.Service.Implementations;
 
 namespace AstronBase.Controllers
 {
     public class StatusFiscalController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly ApplicationDbContext _db;
+        private readonly IStatusFiscalService _statusFiscalService;
 
-        public StatusFiscalController(ApplicationDbContext context)
+        public StatusFiscalController(ApplicationDbContext db, IStatusFiscalService statusFiscalService)
         {
-            _context = context;
+            _db = db;
+            _statusFiscalService = statusFiscalService;
         }
 
-        // GET: StatusFiscals
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchString, int page = 1)
         {
-              return _context.StatusFiscal != null ? 
-                          View(await _context.StatusFiscal.ToListAsync()) :
-                          Problem("Entity set 'AstronBaseContext.StatusFiscal'  is null.");
-        }
 
-        // GET: StatusFiscals/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null || _context.StatusFiscal == null)
+            ViewBag.CurrentFilter = searchString;
+            var response = await _statusFiscalService.GetStatusFiscals();
+
+            if (!string.IsNullOrEmpty(searchString))
             {
-                return NotFound();
+
+                response = await _statusFiscalService.GetStatusFiscalBySearch(searchString);
+
             }
 
-            var statusFiscal = await _context.StatusFiscal
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (statusFiscal == null)
-            {
-                return NotFound();
-            }
+            const int pageSize = 5;
 
-            return View(statusFiscal);
+            var count = response.Data.Count();
+
+            var items = response.Data.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+
+            var pageViewModel = new PageViewModel(count, page, pageSize);
+
+            var viewModel = new StatusFiscalIndexViewModel(items, pageViewModel);
+
+            return View(viewModel);
         }
 
-        // GET: StatusFiscals/Create
+        [HttpGet]
+        public async Task<IActionResult> Details(int id)
+        {
+            var response = await _statusFiscalService.GetStatusFiscal(id);
+
+            if (response.StatusCode == Domain.Enum.StatusCode.OK)
+            {
+                return View(response.Data);
+            }
+
+            return Redirect("Error");
+        }
+
+
+        [HttpGet]
         public IActionResult Create()
         {
+
             return View();
         }
 
-        // POST: StatusFiscals/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name")] StatusFiscal statusFiscal)
+        public async Task<IActionResult> Create(StatusFiscalCreateViewModel model)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(statusFiscal);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(statusFiscal);
-        }
-
-        // GET: StatusFiscals/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null || _context.StatusFiscal == null)
-            {
-                return NotFound();
-            }
-
-            var statusFiscal = await _context.StatusFiscal.FindAsync(id);
-            if (statusFiscal == null)
-            {
-                return NotFound();
-            }
-            return View(statusFiscal);
-        }
-
-        // POST: StatusFiscals/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name")] StatusFiscal statusFiscal)
-        {
-            if (id != statusFiscal.Id)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
+                if (model.Id == 0)
                 {
-                    _context.Update(statusFiscal);
-                    await _context.SaveChangesAsync();
+                    await _statusFiscalService.CreateStatusFiscal(model);
+
+                    return RedirectToAction("Index");
                 }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!StatusFiscalExists(statusFiscal.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+
             }
-            return View(statusFiscal);
+
+            return View();
         }
 
-        // GET: StatusFiscals/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(int id)
         {
-            if (id == null || _context.StatusFiscal == null)
+            if (_statusFiscalService.GetStatusFiscal(id) == null)
             {
                 return NotFound();
             }
 
-            var statusFiscal = await _context.StatusFiscal
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (statusFiscal == null)
+            var response = await _statusFiscalService.GetStatusFiscal(id);
+
+            if (response == null)
             {
                 return NotFound();
             }
 
-            return View(statusFiscal);
+            return View(response.Data);
         }
 
-        // POST: StatusFiscals/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.StatusFiscal == null)
+            var response = await _statusFiscalService.GetStatusFiscal(id);
+
+            if (response == null)
             {
-                return Problem("Entity set 'AstronBaseContext.StatusFiscal'  is null.");
+                return Problem("Entity set 'Context.StatusFiscal'  is null.");
             }
-            var statusFiscal = await _context.StatusFiscal.FindAsync(id);
-            if (statusFiscal != null)
+
+            if (response.Data != null)
             {
-                _context.StatusFiscal.Remove(statusFiscal);
+                await _statusFiscalService.DeleteStatusFiscal(id);
             }
-            
-            await _context.SaveChangesAsync();
+
             return RedirectToAction(nameof(Index));
         }
 
-        private bool StatusFiscalExists(int id)
+        public async Task<IActionResult> Edit(int id)
         {
-          return (_context.StatusFiscal?.Any(e => e.Id == id)).GetValueOrDefault();
+            var store = await _statusFiscalService.GetStatusFiscal(id);
+
+            return View(store.Data);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name")] StatusFiscalEditViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                if (model.Id != 0)
+                {
+                    await _statusFiscalService.Edit(model.Id, model);
+                }
+                else
+                {
+                    return Redirect("Error");
+                }
+
+                return RedirectToAction("Index");
+            }
+            return Redirect("Error");
+
         }
     }
 }

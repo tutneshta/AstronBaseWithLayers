@@ -1,6 +1,7 @@
 ﻿using AstronBase.DAL.Interfaces;
 using AstronBase.Domain.Entity;
 using Microsoft.EntityFrameworkCore;
+using System.Xml.Linq;
 
 namespace AstronBase.DAL.Repositories
 {
@@ -48,6 +49,15 @@ namespace AstronBase.DAL.Repositories
         public async Task<Store> GetByName(string name)
         {
             return await _db.Store.Include(c => c.Company).FirstOrDefaultAsync(x => x.Name == name);
+        }
+
+        public Task<List<Store>> GetBySearch(string search)
+        {
+            var client = from c in _db.Store select c;
+
+            return _db.Store.Where(c => c.Name.Contains(search))
+                .Include(c => c.Company)
+                .ToListAsync();
         }
     }
 }

@@ -1,20 +1,43 @@
-﻿using AstronBase.Domain.ViewModels.Client;
+﻿using AstronBase.DAL;
+using AstronBase.Domain.ViewModels.Client;
 using AstronBase.Domain.ViewModels.Pagination;
 
 using AstronBase.Service.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace AstronBase.Controllers
 {
     public class ClientController : Controller
     {
         private readonly IClientService _clientService;
+        private readonly ApplicationDbContext _db;
 
 
-        public ClientController(IClientService clientService)
+        public ClientController(IClientService clientService, ApplicationDbContext db)
         {
             _clientService = clientService;
+            _db = db;
         }
+
+        private void CompaniesDropDownList(object selectedCompany = null)
+        {
+            var companyQuery = from d in _db.Company
+                orderby d.Name
+                select d;
+
+            ViewBag.CompanyId = new SelectList(companyQuery, "Id", "Name", selectedCompany);
+        }
+
+        private void StoresDropDownList(object selectedStore = null)
+        {
+            var storeQuery = from d in _db.Store
+                orderby d.Name
+                select d;
+
+            ViewBag.StoreId = new SelectList(storeQuery, "Id", "Name", selectedStore);
+        }
+
 
         /// <summary>
         /// request to withdraw all clients
@@ -63,21 +86,25 @@ namespace AstronBase.Controllers
         [HttpGet]
         public IActionResult Create()
         {
+            CompaniesDropDownList();
+            StoresDropDownList();
+
             return View();
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(ClientViewModel model)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(ClientCreateViewModel model)
         {
             if (ModelState.IsValid)
             {
                 if (model.Id == 0)
                 {
                     await _clientService.CreateClient(model);
+
                     return RedirectToAction("Index");
                 }
 
-                await _clientService.Edit(model.Id, model);
             }
 
             return View();
@@ -137,18 +164,10 @@ namespace AstronBase.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, ClientViewModel model)
+        public async Task<IActionResult> Edit(int id, ClientEditViewModel model)
         {
             if (ModelState.IsValid)
             {
-                if (model.Id == 0)
-                {
-                    await _clientService.Edit(model.Id, model);
-                }
-                else
-                {
-                    await _clientService.Edit(model.Id, model);
-                }
 
                 return RedirectToAction("Index");
             }

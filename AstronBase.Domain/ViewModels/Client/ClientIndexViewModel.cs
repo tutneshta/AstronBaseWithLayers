@@ -7,7 +7,7 @@ namespace AstronBase.Domain.ViewModels.Client
         public IEnumerable<Entity.Client> Clients { get; }
         public PageViewModel PageViewModel { get; }
 
-        public ClientIndexViewModel(IEnumerable<Entity.Client> clients, PageViewModel viewModel)
+        public ClientIndexViewModel(List<Entity.Client> clients, PageViewModel viewModel)
         {
             Clients = clients;
             PageViewModel = viewModel;

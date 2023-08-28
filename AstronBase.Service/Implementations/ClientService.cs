@@ -176,23 +176,25 @@ namespace AstronBase.Service.Implementations
             }
         }
 
-        public async Task<IBaseResponse<ClientViewModel>> CreateClient(ClientViewModel model)
+        public async Task<IBaseResponse<ClientCreateViewModel>> CreateClient(ClientCreateViewModel model)
         {
-            var baseResponse = new BaseResponse<ClientViewModel>();
+            var baseResponse = new BaseResponse<ClientCreateViewModel>();
 
             try
             {
                 var client = new Client()
                 {
                     Name = model.Name,
-                    PhoneNumber = model.PhoneNumber
+                    PhoneNumber = model.PhoneNumber,
+                    CompanyId = model.CompanyId,
+                    StoreId = model.StoreId,
                 };
 
                 await _clientRepository.Create(client);
             }
             catch (Exception e)
             {
-                return new BaseResponse<ClientViewModel>()
+                return new BaseResponse<ClientCreateViewModel>()
                 {
                     Description = $"[CreateClient] : {e.Message}",
                     StatusCode = StatusCode.ClientNotFound
@@ -202,7 +204,7 @@ namespace AstronBase.Service.Implementations
             return baseResponse;
         }
 
-        public async Task<IBaseResponse<Client>> Edit(int id, ClientViewModel model)
+        public async Task<IBaseResponse<Client>> Edit(int id, ClientEditViewModel model)
         {
             var baseResponse = new BaseResponse<Client>();
             var client = await _clientRepository.Get(id);
@@ -219,6 +221,9 @@ namespace AstronBase.Service.Implementations
 
                 client.Name = model.Name;
                 client.PhoneNumber = model.PhoneNumber;
+                client.CompanyId = model.CompanyId;
+                client.StoreId = model.StoreId;
+
                 await _clientRepository.Update(client);
 
                 return baseResponse;

@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AstronBase.DAL
 {
-    public sealed class ApplicationDbContext : IdentityDbContext<User>
+    public sealed class ApplicationDbContext : IdentityDbContext<User, Role, string>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {

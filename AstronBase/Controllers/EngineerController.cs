@@ -9,157 +9,152 @@ using Microsoft.EntityFrameworkCore;
 using AstronBase.Domain.Entity;
 using AstronBase.Models;
 using AstronBase.DAL;
+using AstronBase.Domain.ViewModels.Engineer;
+using AstronBase.Service.Interfaces;
+using AstronBase.Domain.ViewModels.Pagination;
+using AstronBase.Domain.ViewModels.Store;
+using AstronBase.Service.Implementations;
 
 namespace AstronBase.Controllers
 {
     public class EngineerController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly ApplicationDbContext _db;
+        private readonly IEngineerService _engineerService;
 
-        public EngineerController(ApplicationDbContext context)
+        public EngineerController(ApplicationDbContext context, IEngineerService engineerService)
         {
-            _context = context;
+            _db = context;
+            _engineerService = engineerService;
         }
 
-        // GET: Engineers
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchString, int page = 1)
         {
-              return _context.Engineer != null ? 
-                          View(await _context.Engineer.ToListAsync()) :
-                          Problem("Entity set 'AstronBaseContext.Engineer'  is null.");
-        }
 
-        // GET: Engineers/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null || _context.Engineer == null)
+            ViewBag.CurrentFilter = searchString;
+            var response = await _engineerService.GetEngineers();
+
+            if (!string.IsNullOrEmpty(searchString))
             {
-                return NotFound();
+
+                response = await _engineerService.GetEngineerBySearch(searchString);
+
             }
 
-            var engineer = await _context.Engineer
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (engineer == null)
-            {
-                return NotFound();
-            }
+            const int pageSize = 5;
 
-            return View(engineer);
+            var count = response.Data.Count();
+
+            var items = response.Data.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+
+            var pageViewModel = new PageViewModel(count, page, pageSize);
+
+            var viewModel = new EngineerIndexViewModel(items, pageViewModel);
+
+            return View(viewModel);
         }
 
-        // GET: Engineers/Create
+        [HttpGet]
+        public async Task<IActionResult> Details(int id)
+        {
+            var response = await _engineerService.GetEngineer(id);
+
+            if (response.StatusCode == Domain.Enum.StatusCode.OK)
+            {
+                return View(response.Data);
+            }
+
+            return Redirect("Error");
+        }
+
+        [HttpGet]
         public IActionResult Create()
         {
+
             return View();
         }
 
-        // POST: Engineers/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,FirstName,LastName,PhoneNumber,Email")] Engineer engineer)
+        public async Task<IActionResult> Create(EngineerCreateViewModel model)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(engineer);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(engineer);
-        }
-
-        // GET: Engineers/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null || _context.Engineer == null)
-            {
-                return NotFound();
-            }
-
-            var engineer = await _context.Engineer.FindAsync(id);
-            if (engineer == null)
-            {
-                return NotFound();
-            }
-            return View(engineer);
-        }
-
-        // POST: Engineers/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,FirstName,LastName,PhoneNumber,Email")] Engineer engineer)
-        {
-            if (id != engineer.Id)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
+                if (model.Id == 0)
                 {
-                    _context.Update(engineer);
-                    await _context.SaveChangesAsync();
+                    await _engineerService.CreateEngineer(model);
+
+                    return RedirectToAction("Index");
                 }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!EngineerExists(engineer.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+
             }
-            return View(engineer);
+
+            return View();
         }
 
-        // GET: Engineers/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(int id)
         {
-            if (id == null || _context.Engineer == null)
+            if (_engineerService.GetEngineer(id) == null)
             {
                 return NotFound();
             }
 
-            var engineer = await _context.Engineer
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (engineer == null)
+            var response = await _engineerService.GetEngineer(id);
+
+            if (response == null)
             {
                 return NotFound();
             }
 
-            return View(engineer);
+            return View(response.Data);
         }
 
-        // POST: Engineers/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.Engineer == null)
+            var response = await _engineerService.GetEngineer(id);
+
+            if (response == null)
             {
                 return Problem("Entity set 'AstronBaseContext.Engineer'  is null.");
             }
-            var engineer = await _context.Engineer.FindAsync(id);
-            if (engineer != null)
+
+            if (response.Data != null)
             {
-                _context.Engineer.Remove(engineer);
+                await _engineerService.DeleteEngineer(id);
             }
-            
-            await _context.SaveChangesAsync();
+
             return RedirectToAction(nameof(Index));
         }
 
-        private bool EngineerExists(int id)
+        public async Task<IActionResult> Edit(int id)
         {
-          return (_context.Engineer?.Any(e => e.Id == id)).GetValueOrDefault();
+            var store = await _engineerService.GetEngineer(id);
+
+            return View(store.Data);
         }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, EngineerEditViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                if (model.Id != 0)
+                {
+                    await _engineerService.Edit(model.Id, model);
+                }
+                else
+                {
+                    return Redirect("Error");
+                }
+
+                return RedirectToAction("Index");
+            }
+            return Redirect("Error");
+
+        }
+
     }
 }

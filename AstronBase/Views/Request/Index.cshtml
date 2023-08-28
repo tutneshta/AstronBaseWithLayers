@@ -1,74 +1,131 @@
-﻿@model IEnumerable<AstronBase.Domain.Entity.Request>
+﻿@model AstronBase.Domain.ViewModels.Request.RequestIndexViewModel
 
 @{
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<h1>Заявки</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create">Новая заявка</a>
 </p>
+@using (Html.BeginForm())
+{
+    <p>
+        @Html.TextBox("SearchString")
+        <input type="submit" value="Search" />
+    </p>
+}
 <table class="table">
     <thead>
-        <tr>
+    <tr>
          
-            <th>
-                Номер заявки
-                @* @Html.DisplayNameFor(model => model.Id)*@
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.NumberPos)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Date)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ReasonPetition)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Works)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Note)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.AktNumber)
-            </th>
-            <th></th>
-        </tr>
+        <th>
+            Номер заявки
+        </th>
+        <th>
+           Дата
+        </th>
+        <th>
+            Организация
+        </th>
+        <th>
+            Магазин
+        </th>
+        <th>
+            Контакт
+        </th>
+        <th>
+            Номер ФР
+        </th>
+        <th>
+            Номер рабочего места
+        </th>
+        <th>
+            инженер
+        </th>
+        <th>
+            Причина обращения
+        </th>
+        <th>
+            Выполненные работы
+        </th>
+        <th>
+            Статус заявки
+        </th>
+        <th>
+            Примечание
+        </th>
+
+
+    </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.Id)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Date)
-        </td>
+    @foreach (var item in Model.Requests) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Number)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Date)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Company.Name)
+            </td>
 
-        <td>
-            @Html.DisplayFor(modelItem => item.NumberPos)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.ReasonPetition)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Works)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Note)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.AktNumber)
-        </td>
-        <td>
-            <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-            <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-            <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-        </td>
-    </tr>
-}
+            <td>
+                @Html.DisplayFor(modelItem => item.Store.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Client.PhoneNumber)
+                @Html.DisplayFor(modelItem => item.Client.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Fiscal.SerialNumber)
+            </td>
+
+            <td>
+                @Html.DisplayFor(modelItem => item.NumberPos)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Engineer.LastName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ReasonPetition)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Works)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.StatusRequest.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Note)
+            </td>
+
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a>
+            </td>
+        </tr>
+    }
     </tbody>
 </table>
+<page-link page-model="Model.PageViewModel" page-action="Index"></page-link>
+
+<p>
+    @if (Model.PageViewModel.HasPreviousPage)
+    {
+        <a asp-action="Index"
+           asp-route-page="@(Model.PageViewModel.PageNumber - 1)" class="glyphicon glyphicon-chevron-left">
+            Назад
+        </a>
+    }
+    @if (Model.PageViewModel.HasNextPage)
+    {
+        <a asp-action="Index"
+           asp-route-page="@(Model.PageViewModel.PageNumber + 1)" class="glyphicon glyphicon-chevron-right">
+            Вперед
+        </a>
+    }
+</p>

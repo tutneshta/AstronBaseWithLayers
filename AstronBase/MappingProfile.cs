@@ -1,4 +1,6 @@
-﻿using AstronBase.Models;
+﻿using AstronBase.Domain.Entity;
+using AstronBase.Domain.ViewModels.Users;
+using AstronBase.Models;
 using AutoMapper;
 
 namespace AstronBase
@@ -7,6 +9,11 @@ namespace AstronBase
     {
         public MappingProfile()
         {
+
+            CreateMap<UserRegisterViewModel, User>()
+                .ForMember(x => x.Email, opt => opt.MapFrom(c => c.Email))
+                .ForMember(x => x.UserName, opt => opt.MapFrom(c => c.UserName));
+
         }
     }
 }

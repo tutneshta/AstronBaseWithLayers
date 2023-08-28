@@ -130,9 +130,9 @@ namespace AstronBase.Service.Implementations
             }
         }
 
-        public async Task<IBaseResponse<StoreViewModel>> CreateStore(StoreViewModel model)
+        public async Task<IBaseResponse<StoreCreateViewModel>> CreateStore(StoreCreateViewModel model)
         {
-            var baseResponse = new BaseResponse<StoreViewModel>();
+            var baseResponse = new BaseResponse<StoreCreateViewModel>();
 
             try
             {
@@ -149,7 +149,7 @@ namespace AstronBase.Service.Implementations
             }
             catch (Exception e)
             {
-                return new BaseResponse<StoreViewModel>()
+                return new BaseResponse<StoreCreateViewModel>()
                 {
                     Description = $"[CreateStore] : {e.Message}",
                     StatusCode = StatusCode.StoreNotFound
@@ -159,7 +159,7 @@ namespace AstronBase.Service.Implementations
             return baseResponse;
         }
 
-        public async Task<IBaseResponse<Store>> Edit(int id, StoreViewModel model)
+        public async Task<IBaseResponse<Store>> Edit(int id, StoreEditViewModel model)
         {
             var baseResponse = new BaseResponse<Store>();
 
@@ -178,9 +178,6 @@ namespace AstronBase.Service.Implementations
                 store.CompanyId = model.CompanyId;
                 store.Id = model.Id;
 
-
-            
-
                 await _storeRepository.Update(store);
 
                 return baseResponse;
@@ -191,6 +188,33 @@ namespace AstronBase.Service.Implementations
                 {
                     Description = $"[Edit] : {e.Message}",
                     StatusCode = StatusCode.ClientNotFound
+                };
+            }
+        }
+
+        public async Task<IBaseResponse<IEnumerable<Store>>> GetStoreBySearch(string search)
+        {
+            var baseResponse = new BaseResponse<IEnumerable<Store>>();
+            try
+            {
+                var store = await _storeRepository.GetBySearch(search);
+                if (store == null)
+                {
+                    baseResponse.Description = "Store not found";
+                    baseResponse.StatusCode = StatusCode.InternalServerError;
+                    return baseResponse;
+                }
+
+                baseResponse.Data = store;
+                baseResponse.StatusCode = StatusCode.OK;
+                return baseResponse;
+            }
+            catch (Exception e)
+            {
+                return new BaseResponse<IEnumerable<Store>>()
+                {
+                    Description = $"[GetStoreBySearch] : {e.Message}",
+
                 };
             }
         }

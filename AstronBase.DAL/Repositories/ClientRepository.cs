@@ -29,7 +29,9 @@ namespace AstronBase.DAL.Repositories
         /// <returns></returns>
         public async Task<Client> Get(int id)
         {
-            return await _db.Client.FirstOrDefaultAsync(x => x.Id == id);
+            return await _db.Client.Include(c => c.Company)
+                .Include(s => s.Store)
+                . FirstOrDefaultAsync(x => x.Id == id);
         }
 
         /// <summary>
@@ -38,7 +40,10 @@ namespace AstronBase.DAL.Repositories
         /// <returns></returns>
         public Task<List<Client>> Select()
         {
-            return _db.Client.ToListAsync();
+            return _db.Client
+                .Include(c => c.Company)
+                .Include(s => s.Store)
+                .ToListAsync();
         }
 
         /// <summary>

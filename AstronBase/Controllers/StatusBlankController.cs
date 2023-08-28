@@ -9,157 +9,151 @@ using Microsoft.EntityFrameworkCore;
 
 using AstronBase.Models;
 using AstronBase.DAL;
+using AstronBase.Service.Interfaces;
+using AstronBase.Domain.ViewModels.Model;
+using AstronBase.Domain.ViewModels.Pagination;
+using AstronBase.Domain.ViewModels.StatusBlank;
+using AstronBase.Service.Implementations;
 
 namespace AstronBase.Controllers
 {
     public class StatusBlankController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly ApplicationDbContext _db;
+        private readonly IStatusBlankService _statusBlankService;
 
-        public StatusBlankController(ApplicationDbContext context)
+        public StatusBlankController(ApplicationDbContext context, IStatusBlankService statusBlankService)
         {
-            _context = context;
+            _db = context;
+            _statusBlankService = statusBlankService;
         }
 
-        // GET: StatusBlanks
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchString, int page = 1)
         {
-              return _context.StatusBlank != null ? 
-                          View(await _context.StatusBlank.ToListAsync()) :
-                          Problem("Entity set 'AstronBaseContext.StatusBlank'  is null.");
-        }
 
-        // GET: StatusBlanks/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null || _context.StatusBlank == null)
+            ViewBag.CurrentFilter = searchString;
+            var response = await _statusBlankService.GetStatusBlanks();
+
+            if (!string.IsNullOrEmpty(searchString))
             {
-                return NotFound();
+
+                response = await _statusBlankService.GetStatusBlankBySearch(searchString);
+
             }
 
-            var statusBlank = await _context.StatusBlank
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (statusBlank == null)
-            {
-                return NotFound();
-            }
+            const int pageSize = 5;
 
-            return View(statusBlank);
+            var count = response.Data.Count();
+
+            var items = response.Data.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+
+            var pageViewModel = new PageViewModel(count, page, pageSize);
+
+            var viewModel = new StatusBlankIndexViewModel(items, pageViewModel);
+
+            return View(viewModel);
         }
 
-        // GET: StatusBlanks/Create
+        [HttpGet]
+        public async Task<IActionResult> Details(int id)
+        {
+            var response = await _statusBlankService.GetStatusBlank(id);
+
+            if (response.StatusCode == Domain.Enum.StatusCode.OK)
+            {
+                return View(response.Data);
+            }
+
+            return Redirect("Error");
+        }
+
+
+        [HttpGet]
         public IActionResult Create()
         {
+
             return View();
         }
 
-        // POST: StatusBlanks/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name")] StatusBlank statusBlank)
+        public async Task<IActionResult> Create(StatusBlankCreateViewModel model)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(statusBlank);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(statusBlank);
-        }
-
-        // GET: StatusBlanks/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null || _context.StatusBlank == null)
-            {
-                return NotFound();
-            }
-
-            var statusBlank = await _context.StatusBlank.FindAsync(id);
-            if (statusBlank == null)
-            {
-                return NotFound();
-            }
-            return View(statusBlank);
-        }
-
-        // POST: StatusBlanks/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name")] StatusBlank statusBlank)
-        {
-            if (id != statusBlank.Id)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
+                if (model.Id == 0)
                 {
-                    _context.Update(statusBlank);
-                    await _context.SaveChangesAsync();
+                    await _statusBlankService.CreateStatusBlank(model);
+
+                    return RedirectToAction("Index");
                 }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!StatusBlankExists(statusBlank.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+
             }
-            return View(statusBlank);
+
+            return View();
         }
 
-        // GET: StatusBlanks/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(int id)
         {
-            if (id == null || _context.StatusBlank == null)
+            if (_statusBlankService.GetStatusBlank(id) == null)
             {
                 return NotFound();
             }
 
-            var statusBlank = await _context.StatusBlank
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (statusBlank == null)
+            var response = await _statusBlankService.GetStatusBlank(id);
+
+            if (response == null)
             {
                 return NotFound();
             }
 
-            return View(statusBlank);
+            return View(response.Data);
         }
 
-        // POST: StatusBlanks/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.StatusBlank == null)
+            var response = await _statusBlankService.GetStatusBlank(id);
+
+            if (response == null)
             {
-                return Problem("Entity set 'AstronBaseContext.StatusBlank'  is null.");
+                return Problem("Entity set 'ApplicationDbContext.StatusBlank'  is null.");
             }
-            var statusBlank = await _context.StatusBlank.FindAsync(id);
-            if (statusBlank != null)
+
+            if (response.Data != null)
             {
-                _context.StatusBlank.Remove(statusBlank);
+                await _statusBlankService.DeleteStatusBlank(id);
             }
-            
-            await _context.SaveChangesAsync();
+
             return RedirectToAction(nameof(Index));
         }
 
-        private bool StatusBlankExists(int id)
+        public async Task<IActionResult> Edit(int id)
         {
-          return (_context.StatusBlank?.Any(e => e.Id == id)).GetValueOrDefault();
+            var statusBlank = await _statusBlankService.GetStatusBlank(id);
+
+            return View(statusBlank.Data);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name")] StatusBlankEditViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                if (model.Id != 0)
+                {
+                    await _statusBlankService.Edit(model.Id, model);
+                }
+                else
+                {
+                    return Redirect("Error");
+                }
+
+                return RedirectToAction("Index");
+            }
+            return Redirect("Error");
+
         }
     }
 }

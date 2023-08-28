@@ -7,6 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="12.0.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\AstronBase.DAL\AstronBase.DAL.csproj" />
     <ProjectReference Include="..\AstronBase.Domain\AstronBase.Domain.csproj" />
   </ItemGroup>

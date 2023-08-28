@@ -9,10 +9,11 @@ using Microsoft.EntityFrameworkCore;
 using AstronBase.Models;
 using System.Data;
 using AstronBase.DAL;
+using AstronBase.Domain.ViewModels.Client;
+using AstronBase.Domain.ViewModels.Pagination;
 using AstronBase.Domain.ViewModels.Store;
 using AstronBase.Service.Interfaces;
 
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 
 namespace AstronBase.Controllers
@@ -33,17 +34,34 @@ namespace AstronBase.Controllers
         /// request to withdraw all stores
         /// </summary>
         /// <returns></returns>
-        [HttpGet]
-        public async Task<IActionResult> Index()
+        ///
+
+        
+        public async Task<IActionResult> Index(string searchString, int page = 1)
         {
+     
+            ViewBag.CurrentFilter = searchString;
+
             var response = await _storeService.GetStores();
 
-            if (response.StatusCode == Domain.Enum.StatusCode.OK)
+            if (!string.IsNullOrEmpty(searchString))
             {
-                return View(response.Data);
+
+                response = await _storeService.GetStoreBySearch(searchString);
+
             }
 
-            return Redirect("Error");
+            const int pageSize = 5;
+
+            var count = response.Data.Count();
+
+            var items = response.Data.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+
+            var pageViewModel = new PageViewModel(count, page, pageSize);
+
+            var viewModel = new StoreIndexViewModel(items, pageViewModel);
+
+            return View(viewModel);
         }
 
         [HttpGet]
@@ -77,7 +95,7 @@ namespace AstronBase.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(StoreViewModel model)
+        public async Task<IActionResult> Create(StoreCreateViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -88,7 +106,6 @@ namespace AstronBase.Controllers
                     return RedirectToAction("Index");
                 }
 
-                await _storeService.Edit(model.Id, model);
             }
 
             return View();
@@ -141,23 +158,23 @@ namespace AstronBase.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name, CompanyId")] StoreViewModel model)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name, CompanyId")] StoreEditViewModel model)
         {
             if (ModelState.IsValid)
             {
-                if (model.Id == 0)
+                if (model.Id != 0)
                 {
                     await _storeService.Edit(model.Id, model);
                 }
                 else
                 {
-                    await _storeService.Edit(model.Id, model);
+                    return Redirect("Error");
                 }
 
                 return RedirectToAction("Index");
             }
-
             return Redirect("Error");
+
 
             CompaniesDropDownList(model.CompanyId);
         }

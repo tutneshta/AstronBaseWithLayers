@@ -7,7 +7,11 @@ namespace AstronBase.Domain.Entity
         public int Id { get; set; }
         public string Name { get; set; }
         public string PhoneNumber { get; set; }
-        public List<Company> Company { get; set; } = new();
+        public int CompanyId { get; set; }
+        public Company Company { get; set; }
+        public int? StoreId { get; set; }
+        public Store Store { get; set; }
+
 
 
     }

@@ -14,8 +14,10 @@ namespace AstronBase.Service.Interfaces
 
         Task<IBaseResponse<bool>> DeleteStore(int id);
 
-        Task<IBaseResponse<StoreViewModel>> CreateStore(StoreViewModel model);
+        Task<IBaseResponse<StoreCreateViewModel>> CreateStore(StoreCreateViewModel model);
 
-        Task<IBaseResponse<Store>> Edit(int id, StoreViewModel model);
+        Task<IBaseResponse<Store>> Edit(int id, StoreEditViewModel model);
+
+        Task<IBaseResponse<IEnumerable<Store>>> GetStoreBySearch(string search);
     }
 }

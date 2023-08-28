@@ -1,6 +1,12 @@
-﻿namespace AstronBase.Domain.ViewModels.Company
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace AstronBase.Domain.ViewModels.Company
 {
-    public class CompanyViewModel
+    public class CompanyEditViewModel
     {
         public int Id { get; set; }
         public string Name { get; set; }

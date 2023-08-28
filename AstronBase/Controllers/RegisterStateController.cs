@@ -9,157 +9,155 @@ using Microsoft.EntityFrameworkCore;
 
 using AstronBase.Models;
 using AstronBase.DAL;
+using AstronBase.Service.Interfaces;
+using AstronBase.Domain.ViewModels.Model;
+using AstronBase.Domain.ViewModels.Pagination;
+using AstronBase.Domain.ViewModels.RegisterState;
+using AstronBase.Service.Implementations;
 
 namespace AstronBase.Controllers
 {
     public class RegisterStateController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IRegisterStateService _registerStateService;
+        private readonly ApplicationDbContext _db;
 
-        public RegisterStateController(ApplicationDbContext context)
+        public RegisterStateController(IRegisterStateService registerStateService, ApplicationDbContext db)
         {
-            _context = context;
+            _registerStateService = registerStateService;
+            _db = db;
         }
 
-        // GET: RegisterStates
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchString, int page = 1)
         {
-              return _context.RegisterState != null ? 
-                          View(await _context.RegisterState.ToListAsync()) :
-                          Problem("Entity set 'AstronBaseContext.RegisterState'  is null.");
-        }
 
-        // GET: RegisterStates/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null || _context.RegisterState == null)
+            ViewBag.CurrentFilter = searchString;
+            var response = await _registerStateService.GetRegisterStates();
+
+            if (!string.IsNullOrEmpty(searchString))
             {
-                return NotFound();
+
+                response = await _registerStateService.GetRegisterStateBySearch(searchString);
+
             }
 
-            var registerState = await _context.RegisterState
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (registerState == null)
-            {
-                return NotFound();
-            }
+            const int pageSize = 5;
 
-            return View(registerState);
+            var count = response.Data.Count();
+
+            var items = response.Data.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+
+            var pageViewModel = new PageViewModel(count, page, pageSize);
+
+            var viewModel = new RegisterStateIndexViewModel(items, pageViewModel);
+
+            return View(viewModel);
         }
 
-        // GET: RegisterStates/Create
+
+        [HttpGet]
+        public async Task<IActionResult> Details(int id)
+        {
+            var response = await _registerStateService.GetRegisterState(id);
+
+            if (response.StatusCode == Domain.Enum.StatusCode.OK)
+            {
+                return View(response.Data);
+            }
+
+            return Redirect("Error");
+        }
+
+        [HttpGet]
         public IActionResult Create()
         {
+
             return View();
         }
 
-        // POST: RegisterStates/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name")] RegisterState registerState)
+        public async Task<IActionResult> Create(RegisterStateCreateViewModel model)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(registerState);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(registerState);
-        }
-
-        // GET: RegisterStates/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null || _context.RegisterState == null)
-            {
-                return NotFound();
-            }
-
-            var registerState = await _context.RegisterState.FindAsync(id);
-            if (registerState == null)
-            {
-                return NotFound();
-            }
-            return View(registerState);
-        }
-
-        // POST: RegisterStates/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name")] RegisterState registerState)
-        {
-            if (id != registerState.Id)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
+                if (model.Id == 0)
                 {
-                    _context.Update(registerState);
-                    await _context.SaveChangesAsync();
+                    await _registerStateService.CreateRegisterState(model);
+
+                    return RedirectToAction("Index");
                 }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!RegisterStateExists(registerState.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+
             }
-            return View(registerState);
+
+            return View();
         }
 
-        // GET: RegisterStates/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(int id)
         {
-            if (id == null || _context.RegisterState == null)
+            if (_registerStateService.GetRegisterState(id) == null)
             {
                 return NotFound();
             }
 
-            var registerState = await _context.RegisterState
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (registerState == null)
+            var response = await _registerStateService.GetRegisterState(id);
+
+            if (response == null)
             {
                 return NotFound();
             }
 
-            return View(registerState);
+            return View(response.Data);
         }
 
-        // POST: RegisterStates/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.RegisterState == null)
+            var response = await _registerStateService.GetRegisterState(id);
+
+            if (response == null)
             {
-                return Problem("Entity set 'AstronBaseContext.RegisterState'  is null.");
+                return Problem("Entity set 'ApplicationDbContext.RegisterStateNotFound'  is null.");
             }
-            var registerState = await _context.RegisterState.FindAsync(id);
-            if (registerState != null)
+
+            if (response.Data != null)
             {
-                _context.RegisterState.Remove(registerState);
+                await _registerStateService.DeleteRegisterState(id);
             }
-            
-            await _context.SaveChangesAsync();
+
             return RedirectToAction(nameof(Index));
         }
 
-        private bool RegisterStateExists(int id)
+        public async Task<IActionResult> Edit(int id)
         {
-          return (_context.RegisterState?.Any(e => e.Id == id)).GetValueOrDefault();
+            var registerState = await _registerStateService.GetRegisterState(id);
+
+            return View(registerState.Data);
         }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name")] RegisterStateEditViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                if (model.Id != 0)
+                {
+                    await _registerStateService.Edit(model.Id, model);
+                }
+                else
+                {
+                    return Redirect("Error");
+                }
+
+                return RedirectToAction("Index");
+            }
+            return Redirect("Error");
+
+        }
+
+
     }
 }

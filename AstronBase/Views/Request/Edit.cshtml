@@ -14,19 +14,40 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
             <div class="form-group">
-                <label asp-for="Date" class="control-label"></label>
-                <input asp-for="Date" class="form-control" />
-                <span asp-validation-for="Date" class="text-danger"></span>
-            </div>
-            <div class="form-group">
                 <label asp-for="Number" class="control-label"></label>
                 <input asp-for="Number" class="form-control" />
                 <span asp-validation-for="Number" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <label asp-for="Date" class="control-label"></label>
+                <input asp-for="Date" class="form-control" />
+                <span asp-validation-for="Date" class="text-danger"></span>
+            </div>
+            <div>
+                @Html.DropDownList("CompanyId", String.Empty)
+                @Html.ValidationMessageFor(model => model.CompanyId)
+            </div>
+            <div>
+                @Html.DropDownList("StoreId", String.Empty)
+                @Html.ValidationMessageFor(model => model.StoreId)
+            </div>
+            <div>
+                @Html.DropDownList("ClientId", String.Empty)
+                @Html.ValidationMessageFor(model => model.ClientId)
+            </div>
+            <div>
+                @Html.DropDownList("FiscalId", String.Empty)
+                @Html.ValidationMessageFor(model => model.FiscalId)
+            </div>
+
+            <div class="form-group">
                 <label asp-for="NumberPos" class="control-label"></label>
-                <input asp-for="NumberPos" class="form-control" />
+                <input asp-for="NumberPos" class="form-control" value="model.CompanyId" />
                 <span asp-validation-for="NumberPos" class="text-danger"></span>
+            </div>
+            <div>
+                @Html.DropDownList("EngineerId", String.Empty)
+                @Html.ValidationMessageFor(model => model.EngineerId)
             </div>
             <div class="form-group">
                 <label asp-for="ReasonPetition" class="control-label"></label>
@@ -38,16 +59,16 @@
                 <input asp-for="Works" class="form-control" />
                 <span asp-validation-for="Works" class="text-danger"></span>
             </div>
+            <div>
+                @Html.DropDownList("StatusRequestId", String.Empty)
+                @Html.ValidationMessageFor(model => model.StatusRequestId)
+            </div>
             <div class="form-group">
                 <label asp-for="Note" class="control-label"></label>
                 <input asp-for="Note" class="form-control" />
                 <span asp-validation-for="Note" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="AktNumber" class="control-label"></label>
-                <input asp-for="AktNumber" class="form-control" />
-                <span asp-validation-for="AktNumber" class="text-danger"></span>
-            </div>
+
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
