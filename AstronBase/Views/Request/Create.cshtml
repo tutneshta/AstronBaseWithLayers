@@ -57,6 +57,9 @@
             <div>
                 @Html.DropDownListFor(model => model.StatusRequestId , ViewBag.StatusRequestId as SelectList)
             </div>
+            <div>
+                @Html.DropDownListFor(model => model.TypeRequestId , ViewBag.TypeRequestId as SelectList)
+            </div>
             <div class="form-group">
                 <label asp-for="Note" class="control-label"></label>
                 <input asp-for="Note" class="form-control" />

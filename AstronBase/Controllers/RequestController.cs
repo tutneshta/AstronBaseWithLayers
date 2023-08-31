@@ -16,6 +16,7 @@ using AstronBase.Domain.ViewModels.Pagination;
 using AstronBase.Domain.ViewModels.Request;
 using AstronBase.Service.Implementations;
 using Microsoft.VisualBasic.CompilerServices;
+using AstronBase.Domain.ViewModels.Store;
 
 namespace AstronBase.Controllers
 {
@@ -208,18 +209,24 @@ namespace AstronBase.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+
         public async Task<IActionResult> Edit(int id)
         {
-            var response = await _requestService.GetRequest(id);
+            var request = await _requestService.GetRequest(id);
 
-            if (response.StatusCode == Domain.Enum.StatusCode.OK)
-            {
-                return View(response.Data);
-            }
+            CompaniesDropDownList(request.Data.CompanyId);
+            StoresDropDownList(request.Data.StoreId);
+            ClientDropDownList(request.Data.ClientId);
+            EngineerDropDownList(request.Data.ClientId);
+            StatusBlankDropDownList(request.Data.StatusBlankId);
+            StatusRequestDropDownList(request.Data.StatusRequestId);
+            FiscalDropDownList(request.Data.FiscalId);
+            TypeRequestDropDownList(request.Data.TypeRequestId);
 
-            return NotFound();
+
+
+            return View(request.Data);
         }
-
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -227,11 +234,21 @@ namespace AstronBase.Controllers
         {
             if (ModelState.IsValid)
             {
+                if (model.Id != 0)
+                {
+                    await _requestService.Edit(model.Id, model);
+                }
+                else
+                {
+                    return Redirect("Error");
+                }
 
                 return RedirectToAction("Index");
             }
-
             return Redirect("Error");
+
+
+            CompaniesDropDownList(model.CompanyId);
         }
     }
 }

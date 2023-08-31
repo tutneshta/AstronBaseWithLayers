@@ -1,4 +1,5 @@
-﻿@model AstronBase.Domain.Entity.Request
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model AstronBase.Domain.Entity.Request
 
 @{
     ViewData["Title"] = "Edit";
@@ -42,7 +43,7 @@
 
             <div class="form-group">
                 <label asp-for="NumberPos" class="control-label"></label>
-                <input asp-for="NumberPos" class="form-control" value="model.CompanyId" />
+                <input asp-for="NumberPos" class="form-control" />
                 <span asp-validation-for="NumberPos" class="text-danger"></span>
             </div>
             <div>
@@ -58,6 +59,10 @@
                 <label asp-for="Works" class="control-label"></label>
                 <input asp-for="Works" class="form-control" />
                 <span asp-validation-for="Works" class="text-danger"></span>
+            </div>
+            <div>
+                @Html.DropDownList("TypeRequestId", String.Empty)
+                @Html.ValidationMessageFor(model => model.TypeRequestId)
             </div>
             <div>
                 @Html.DropDownList("StatusRequestId", String.Empty)
