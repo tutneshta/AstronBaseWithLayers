@@ -146,6 +146,7 @@ namespace AstronBase.Service.Implementations
             {
                 var request = new Request()
                 {
+                    Id = model.Id,
                     Date = model.Date,
                     Number = model.Number,
                     CompanyId = model.CompanyId,

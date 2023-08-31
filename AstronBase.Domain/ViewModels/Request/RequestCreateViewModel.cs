@@ -19,7 +19,7 @@ namespace AstronBase.Domain.ViewModels.Request
         public int Number { get; set; }
 
         [DisplayName("Организация")]
-        public int CompanyId { get; set; }
+        public int? CompanyId { get; set; }
 
         [DisplayName("Магазин")]
         public int? StoreId { get; set; }
@@ -49,7 +49,7 @@ namespace AstronBase.Domain.ViewModels.Request
         public string? Note { get; set; }
 
         [DisplayName("Тип")]
-        public int TypeRequestId { get; set; }
+        public int? TypeRequestId { get; set; }
 
         [DisplayName("Статус бланка")]
         public int? StatusBlankId { get; set; }

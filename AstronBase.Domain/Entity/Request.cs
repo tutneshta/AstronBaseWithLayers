@@ -49,7 +49,7 @@ namespace AstronBase.Domain.Entity
         public string? Note { get; set; }
 
         [DisplayName("Тип")]
-        public int TypeRequestId { get; set; }
+        public int? TypeRequestId { get; set; }
         public TypeRequest TypeRequest { get; set; }
 
         [DisplayName("Статус бланка")]

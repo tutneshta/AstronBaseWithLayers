@@ -23,7 +23,7 @@
                 <input asp-for="Date" class="form-control" />
                 <span asp-validation-for="Date" class="text-danger"></span>
             </div>
-            <div>
+            <div class="editor-field">
                 @Html.DropDownList("CompanyId", String.Empty)
                 @Html.ValidationMessageFor(model => model.CompanyId)
             </div>
