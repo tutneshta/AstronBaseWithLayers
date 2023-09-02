@@ -19,5 +19,6 @@ namespace AstronBase.Service.Interfaces
         Task<IBaseResponse<Store>> Edit(int id, StoreEditViewModel model);
 
         Task<IBaseResponse<IEnumerable<Store>>> GetStoreBySearch(string search);
+
     }
 }

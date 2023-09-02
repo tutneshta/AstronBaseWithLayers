@@ -10,15 +10,17 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AstronBase", "AstronBase\As
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Domain", "Domain", "{4B9BD637-30B7-45E3-BF3C-5ACC73AF0249}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AstronBase.Domain", "AstronBase.Domain\AstronBase.Domain.csproj", "{268548BB-C307-4287-B27F-51ABBC100433}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AstronBase.Domain", "AstronBase.Domain\AstronBase.Domain.csproj", "{268548BB-C307-4287-B27F-51ABBC100433}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DAL", "DAL", "{2852D14C-8C70-43AD-B53C-E27103762A39}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AstronBase.DAL", "AstronBase.DAL\AstronBase.DAL.csproj", "{355EAEA7-46E2-4054-A3FA-594CFC7B7AC4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AstronBase.DAL", "AstronBase.DAL\AstronBase.DAL.csproj", "{355EAEA7-46E2-4054-A3FA-594CFC7B7AC4}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Service", "Service", "{C2F9656E-4996-4ABF-9AEA-B2A0FE3C424A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AstronBase.Service", "AstronBase.Service\AstronBase.Service.csproj", "{A59639DD-4107-476C-8F51-E2CE60C79931}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AstronBase.Service", "AstronBase.Service\AstronBase.Service.csproj", "{A59639DD-4107-476C-8F51-E2CE60C79931}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "API", "API\API.csproj", "{4979F40B-C16C-43DB-B803-3D98735657A2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -42,6 +44,10 @@ Global
 		{A59639DD-4107-476C-8F51-E2CE60C79931}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A59639DD-4107-476C-8F51-E2CE60C79931}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A59639DD-4107-476C-8F51-E2CE60C79931}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4979F40B-C16C-43DB-B803-3D98735657A2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4979F40B-C16C-43DB-B803-3D98735657A2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4979F40B-C16C-43DB-B803-3D98735657A2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4979F40B-C16C-43DB-B803-3D98735657A2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

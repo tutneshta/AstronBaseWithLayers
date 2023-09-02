@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -22,12 +23,14 @@ namespace AstronBase.Controllers
     {
 
         private readonly IStoreService _storeService;
+        private readonly ICompanyService _companyService;
         private readonly ApplicationDbContext _db;
 
-        public StoreController(IStoreService storeService, ApplicationDbContext db)
+        public StoreController(IStoreService storeService, ApplicationDbContext db, ICompanyService companyService)
         {
             _storeService = storeService;
             _db = db;
+            _companyService = companyService;
         }
 
         /// <summary>
@@ -82,6 +85,8 @@ namespace AstronBase.Controllers
             var companyQuery = from d in _db.Company
                                orderby d.Name
                                select d;
+
+
 
             ViewBag.CompanyId = new SelectList(companyQuery, "Id", "Name", selectedCompany);
         }

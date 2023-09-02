@@ -59,5 +59,17 @@ namespace AstronBase.DAL.Repositories
                 .Include(c => c.Company)
                 .ToListAsync();
         }
+
+        public  Task<List<Company>> CompaniesDropDownList(string search)
+        {
+
+            IOrderedQueryable<Company> companyQuery = from d in _db.Company
+                orderby d.Name
+                select d;
+
+            return companyQuery.ToListAsync();
+        }
+
+
     }
 }
