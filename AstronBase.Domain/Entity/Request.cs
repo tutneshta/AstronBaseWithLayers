@@ -14,15 +14,15 @@ namespace AstronBase.Domain.Entity
 
         [DisplayName("Магазин")]
         public int? StoreId { get; set; }
-        public Store? Store { get; set; }
+        public Store Store { get; set; }
 
         [DisplayName("Организация")]
         public int? CompanyId { get; set; }
         public Company? Company { get; set; }
 
         [DisplayName("Контакт")]
-        public int? ClientId { get; set; }
-        public Client? Client { get; set; }
+        public int ClientId { get; set; }
+        public Client Client { get; set; }
 
         [DisplayName("Номер ФР")]
         public int? FiscalId { get; set; }

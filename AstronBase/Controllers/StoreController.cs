@@ -156,7 +156,7 @@ namespace AstronBase.Controllers
         {
             var store = await _storeService.GetStore(id);
 
-            CompaniesDropDownList(store.Data.CompanyId);
+            CompaniesDropDownList((store.Data.CompanyId));
 
             return View(store.Data);
         }

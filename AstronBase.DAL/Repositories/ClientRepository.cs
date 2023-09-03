@@ -29,7 +29,7 @@ namespace AstronBase.DAL.Repositories
         /// <returns></returns>
         public async Task<Client> Get(int id)
         {
-            return await _db.Client.Include(c => c.Company)
+            return await _db.Client.Include(r => r.Company)
                 .Include(s => s.Store)
                 . FirstOrDefaultAsync(x => x.Id == id);
         }
@@ -53,6 +53,7 @@ namespace AstronBase.DAL.Repositories
         /// <returns></returns>
         public async Task<bool> Delete(Client entity)
         {
+     
             _db.Remove(entity);
 
             await _db.SaveChangesAsync();

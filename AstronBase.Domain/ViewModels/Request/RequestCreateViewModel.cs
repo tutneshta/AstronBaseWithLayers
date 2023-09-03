@@ -25,7 +25,7 @@ namespace AstronBase.Domain.ViewModels.Request
         public int? StoreId { get; set; }
 
         [DisplayName("Контакт")]
-        public int? ClientId { get; set; }
+        public int ClientId { get; set; }
 
         [DisplayName("Номер ФР")]
         public int? FiscalId { get; set; }

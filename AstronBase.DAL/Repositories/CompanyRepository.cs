@@ -34,6 +34,27 @@ namespace AstronBase.DAL.Repositories
 
         public async Task<bool> Delete(Company entity)
         {
+
+            var clients = _db.Client;
+            foreach (var storeId in clients)
+            {
+                if (storeId.Equals(entity.Id))
+                {
+                    storeId.StoreId = null;
+                }
+
+            }
+
+            var stores = _db.Store;
+            foreach (var companyId in stores)
+            {
+                if (companyId.Equals(entity.Id))
+                {
+                    companyId.CompanyId = null;
+                }
+
+            }
+
             _db.Remove(entity);
 
             await _db.SaveChangesAsync();

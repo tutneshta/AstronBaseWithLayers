@@ -21,10 +21,10 @@ namespace AstronBase.Domain.ViewModels.Request
         public int? CompanyId { get; set; }
 
         [DisplayName("Магазин")]
-        public int? StoreId { get; set; }
+        public int StoreId { get; set; }
 
         [DisplayName("Контакт")]
-        public int? ClientId { get; set; }
+        public int ClientId { get; set; }
 
         [DisplayName("Номер ФР")]
         public int? FiscalId { get; set; }
