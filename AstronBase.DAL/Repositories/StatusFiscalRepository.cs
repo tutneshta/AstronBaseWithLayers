@@ -52,6 +52,22 @@ namespace AstronBase.DAL.Repositories
             return entity;
         }
 
+        public async Task<bool> ClearFk(StatusFiscal entity)
+        {
+            var fiscals = _db.Fiscal;
+            foreach (var fiscal in fiscals)
+            {
+                if (fiscal.StatusFiscalId == entity.Id)
+                {
+                    fiscal.StatusFiscalId = null;
+                }
+
+            }
+
+            return true;
+        }
+
+
         public async Task<StatusFiscal> GetByName(string name)
         {
             return await _db.StatusFiscal.FirstOrDefaultAsync(m => m.Name == name);

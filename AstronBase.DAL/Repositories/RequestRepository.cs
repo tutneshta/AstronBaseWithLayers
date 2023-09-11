@@ -74,6 +74,16 @@ namespace AstronBase.DAL.Repositories
             return entity;
         }
 
+        public Task<bool> ClearFk(Request entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void ClearFk(InClassName inClassName)
+        {
+            throw new NotImplementedException();
+        }
+
         //public async Task<Request> GetByNumber(int number)
         //{
         //    return await _db.Request

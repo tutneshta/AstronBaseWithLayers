@@ -1,9 +1,22 @@
 ﻿using AstronBase.DAL.Interfaces;
 using AstronBase.Domain.Entity;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore.Internal;
 
 namespace AstronBase.DAL.Repositories
 {
+    public class InClassName
+    {
+        public InClassName(Company entity)
+        {
+            Entity = entity;
+        }
+
+        public Company Entity { get; private set; }
+        public DbSet<Store> Stores { get; set; }
+    }
+
     public class CompanyRepository : ICompanyRepository
     {
         private readonly ApplicationDbContext _db;
@@ -35,25 +48,7 @@ namespace AstronBase.DAL.Repositories
         public async Task<bool> Delete(Company entity)
         {
 
-            var clients = _db.Client;
-            foreach (var storeId in clients)
-            {
-                if (storeId.Equals(entity.Id))
-                {
-                    storeId.StoreId = null;
-                }
-
-            }
-
-            var stores = _db.Store;
-            foreach (var companyId in stores)
-            {
-                if (companyId.Equals(entity.Id))
-                {
-                    companyId.CompanyId = null;
-                }
-
-            }
+            ClearFk(entity);
 
             _db.Remove(entity);
 
@@ -61,6 +56,54 @@ namespace AstronBase.DAL.Repositories
 
             return true;
         }
+
+        public Task<bool> ClearFk(Company entity)
+        {
+            var stores = _db.Store;
+            foreach (var store in stores)
+            {
+                if (store.CompanyId == entity.Id)
+                {
+                    store.CompanyId = null;
+                }
+
+            }
+
+            var clients = _db.Client;
+            foreach (var client in clients)
+            {
+                if (client.CompanyId == entity.Id)
+                {
+                    client.CompanyId = null;
+                }
+
+            }
+
+            var fiscals  = _db.Fiscal;
+            foreach (var fiscal in fiscals)
+            {
+                if (fiscal.CompanyId == entity.Id)
+                {
+                    fiscal.CompanyId = null;
+                }
+
+            }
+
+            var requests = _db.Request;
+            foreach (var request in requests)
+            {
+                if (request.CompanyId == entity.Id)
+                {
+                    request.CompanyId = null;
+                }
+
+            }
+
+            return Task.FromResult(true);
+        }
+
+
+
 
         public async Task<Company> Update(Company entity)
         {
@@ -70,6 +113,8 @@ namespace AstronBase.DAL.Repositories
 
             return entity;
         }
+
+
 
         public async Task<Company> GetByName(string name)
         {

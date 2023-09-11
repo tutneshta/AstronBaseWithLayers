@@ -11,7 +11,7 @@ namespace AstronBase.Domain.Entity
         public int RegisterStateId { get; set; }
         public RegisterState RegisterState { get; set; }
         [DisplayName("Модель")]
-        public int ModelId { get; set; }
+        public int? ModelId { get; set; }
         
         public Model Model { get; set; }
         [DisplayName("Статус")]

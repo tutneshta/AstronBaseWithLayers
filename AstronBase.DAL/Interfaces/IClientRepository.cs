@@ -7,5 +7,6 @@ namespace AstronBase.DAL.Interfaces
         Task<Client> GetByName(string name);
 
         Task<List<Client>> GetBySearch(string search);
+
     }
 }

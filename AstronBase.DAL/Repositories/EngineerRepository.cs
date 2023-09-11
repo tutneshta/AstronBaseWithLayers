@@ -44,6 +44,7 @@ namespace AstronBase.DAL.Repositories
 
         public async Task<bool> Delete(Engineer entity)
         {
+            ClearFk(entity);
             _db.Remove(entity);
 
             await _db.SaveChangesAsync();
@@ -59,6 +60,33 @@ namespace AstronBase.DAL.Repositories
 
             return entity;
         }
+
+        public async Task<bool> ClearFk(Engineer entity)
+        {
+            var requests = _db.Request;
+            foreach (var request in requests)
+            {
+                if (request.EngineerId == entity.Id)
+                {
+                    request.EngineerId = null;
+                }
+
+            }
+
+            var fiscals = _db.Fiscal;
+            foreach (var fiscal in fiscals)
+            {
+                if (fiscal.EngineerId == entity.Id)
+                {
+                    fiscal.EngineerId = null;
+                }
+
+            }
+
+            return true;
+
+        }
+
 
         public async Task<Engineer> GetByName(string name)
         {

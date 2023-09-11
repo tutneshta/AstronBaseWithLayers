@@ -11,6 +11,7 @@
 
         public List<Request> Requests { get; set; } = new();
         public List<Client> Clients { get; set; } = new();
+        public List<Fiscal> Fiscals { get; set; } = new();
 
 
     }

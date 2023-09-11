@@ -51,6 +51,22 @@ namespace AstronBase.DAL.Repositories
             return entity;
         }
 
+        public async Task<bool> ClearFk(RegisterState entity)
+        {
+            var fiscals = _db.Fiscal;
+            foreach (var fiscal in fiscals)
+            {
+                if (fiscal.ModelId == entity.Id)
+                {
+                    fiscal.ModelId = null;
+                }
+
+            }
+
+            return true;
+        }
+
+
         public async Task<RegisterState> GetByName(string name)
         {
             return await _db.RegisterState.FirstOrDefaultAsync(m => m.Name == name);

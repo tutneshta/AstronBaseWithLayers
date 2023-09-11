@@ -1,4 +1,5 @@
-﻿using AstronBase.Domain.Entity;
+﻿using AstronBase.DAL.Repositories;
+using AstronBase.Domain.Entity;
 
 namespace AstronBase.DAL.Interfaces
 {
@@ -13,6 +14,8 @@ namespace AstronBase.DAL.Interfaces
         Task<bool> Delete(T entity);
 
         Task<T> Update(T entity);
+
+        Task<bool> ClearFk(T entity);
 
     }
 }

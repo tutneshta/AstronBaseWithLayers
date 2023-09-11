@@ -51,6 +51,22 @@ namespace AstronBase.DAL.Repositories
             return entity;
         }
 
+        public async Task<bool> ClearFk(StatusBlank entity)
+        {
+            var requests = _db.Request;
+            foreach (var request in requests)
+            {
+                if (request.StatusBlankId == entity.Id)
+                {
+                    request.StatusBlankId = null;
+                }
+
+            }
+
+            return true;
+        }
+
+
         public async Task<StatusBlank> GetByName(string name)
         {
             return await _db.StatusBlank.FirstOrDefaultAsync(m => m.Name == name);

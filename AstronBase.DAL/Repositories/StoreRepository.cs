@@ -33,21 +33,14 @@ namespace AstronBase.DAL.Repositories
 
         public async Task<bool> Delete(Store entity)
         {
+            ClearFk(entity);
 
-            var clients = _db.Client;
-            foreach (var storeId in clients)
-            {
-                if (storeId.Equals(entity.Id) )
-                {
-                    storeId.StoreId = null;
-                }
-                
-            }
-            await _db.SaveChangesAsync();
-
+            await ClearFk(entity);
 
             _db.Store.Remove(entity);
+
             await _db.SaveChangesAsync();
+
             return true;
         }
 
@@ -57,6 +50,41 @@ namespace AstronBase.DAL.Repositories
             await _db.SaveChangesAsync();
 
             return entity;
+        }
+
+        public async Task<bool> ClearFk(Store entity)
+        {
+            var clients = _db.Client;
+            foreach (var client in clients)
+            {
+                if (client.StoreId == entity.Id)
+                {
+                    client.StoreId = null;
+                }
+
+            }
+
+            var requests = _db.Request;
+            foreach (var request in requests)
+            {
+                if (request.StoreId == entity.Id)
+                {
+                    request.StoreId = null;
+                }
+
+            }
+
+            var fiscals = _db.Fiscal;
+            foreach (var fiscal in fiscals)
+            {
+                if (fiscal.StoreId == entity.Id)
+                {
+                    fiscal.StoreId = null;
+                }
+
+            }
+
+            return true;
         }
 
         public async Task<Store> GetByName(string name)

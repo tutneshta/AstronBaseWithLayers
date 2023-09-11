@@ -1,4 +1,6 @@
-﻿using AstronBase.Domain.Entity;
+﻿using AstronBase.DAL.Repositories;
+using AstronBase.Domain.Entity;
+using Microsoft.EntityFrameworkCore;
 
 namespace AstronBase.DAL.Interfaces
 {
@@ -7,5 +9,6 @@ namespace AstronBase.DAL.Interfaces
         Task<Company> GetByName(string name);
 
         Task<List<Company>> GetBySearch(string search);
+
     }
 }

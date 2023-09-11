@@ -53,13 +53,16 @@ namespace AstronBase.DAL.Repositories
         /// <returns></returns>
         public async Task<bool> Delete(Client entity)
         {
-     
+            
+
             _db.Remove(entity);
 
             await _db.SaveChangesAsync();
 
             return true;
         }
+
+
 
         /// <summary>
         /// update Client
@@ -74,6 +77,14 @@ namespace AstronBase.DAL.Repositories
 
             return entity;
         }
+
+        public Task<bool> ClearFk(Client entity)
+        {
+
+
+            return Task.FromResult(true);
+        }
+
 
         /// <summary>
         /// get Client in name

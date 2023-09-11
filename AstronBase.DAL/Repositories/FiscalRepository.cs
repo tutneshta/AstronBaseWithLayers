@@ -51,6 +51,8 @@ namespace AstronBase.DAL.Repositories
 
         public async Task<bool> Delete(Fiscal entity)
         {
+            await ClearFk(entity);
+
             _db.Remove(entity);
 
             await _db.SaveChangesAsync();
@@ -66,6 +68,22 @@ namespace AstronBase.DAL.Repositories
 
             return entity;
         }
+
+        public async Task<bool> ClearFk(Fiscal entity)
+        {
+            var requests = _db.Request;
+            foreach (var request in requests)
+            {
+                if (request.FiscalId == entity.Id)
+                {
+                    request.FiscalId = null;
+                }
+
+            }
+
+            return true;
+        }
+
 
         public async Task<Fiscal> GetByserial(string serial)
         {
